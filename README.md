@@ -1,2 +1,2 @@
-# cmm
+# CMM
 Church Music Manager
