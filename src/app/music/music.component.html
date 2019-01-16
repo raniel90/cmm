@@ -5,14 +5,15 @@
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Adicionar/Alterar Música</ion-title>
+    <ion-title>Música</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card class="welcome-card">
     <ion-card-header>
-      <ion-card-title>Nova Música</ion-card-title>
+      <ion-card-title *ngIf="isNew">Nova Música</ion-card-title>
+      <ion-card-title *ngIf="!isNew">Alterar Música</ion-card-title>
       <ion-item no-padding style="margin-top:1vh">
         <ion-input required type="text" placeholder="Informe uma música"></ion-input>
       </ion-item>

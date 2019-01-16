@@ -8,11 +8,13 @@ import { Router } from '@angular/router';
 })
 export class Tab1Page {
 
+  musics = ['Eu te agradeço', 'Tua Misericórida'];
+
   constructor(private router: Router) {
 
   }
 
   addMusic() {
-    this.router.navigate(['/music']);
+    this.router.navigate(['/music'], { queryParams: { is_new: true } });
   }
 }

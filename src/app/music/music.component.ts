@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-music',
@@ -8,11 +8,15 @@ import { Router } from '@angular/router';
 })
 export class MusicComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  public isNew: boolean;
+
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.isNew = params.is_new;
+    });
   }
-
 
   goBack() {
     this.router.navigate(['/tabs/tab1']);
