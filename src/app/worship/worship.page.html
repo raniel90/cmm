@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Culto</ion-title>
+    <ion-buttons slot="primary" *ngIf="worshipForm.value.id">
+      <ion-button color="light" (click)="presentAlertRemoveWorship()">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="worshipForm">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Data</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+          <ion-datetime style="margin-top:1vh" formControlName="date" display-format="DD/MM/YYYY" required></ion-datetime>
+        </ion-item>
+        <ion-card-title style="margin-top:1vh">Banda</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+          <ion-select placeholder="Selecione" formControlName="band" required>
+            <ion-select-option value="Banda 1">Banda 1</ion-select-option>
+            <ion-select-option value="Banda 2">Banda 2</ion-select-option>
+            <ion-select-option value="Banda 3">Banda 3</ion-select-option>
+            <ion-select-option value="Banda Mix">Banda Mix</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-card-title style="margin-top:1vh">Turno</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+          <ion-select placeholder="Selecione" formControlName="shift" required>
+            <ion-select-option value="Matutino">Matutino</ion-select-option>
+            <ion-select-option value="Noturno">Noturno</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-row style="text-align: right">
+          <ion-col>
+            <ion-button shape="round" color="primary" [disabled]="worshipForm.invalid" (click)="saveWorship()" fill="outline">Salvar</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </form>
+
+</ion-content>

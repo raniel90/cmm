@@ -6,13 +6,13 @@ import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-music',
-  templateUrl: './music.component.html',
-  styleUrls: ['./music.component.scss']
+  selector: 'app-worship',
+  templateUrl: './worship.page.html',
+  styleUrls: ['./worship.page.scss'],
 })
-export class MusicComponent implements OnInit {
-  musicForm: FormGroup;
+export class WorshipPage implements OnInit {
   loading: any;
+  worshipForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,15 +25,16 @@ export class MusicComponent implements OnInit {
   }
 
   initForm() {
-    this.musicForm = this.formBuilder.group({
+    this.worshipForm = this.formBuilder.group({
       id: [null],
-      name: [null],
-      artist: [null]
+      date: [new Date().toISOString()],
+      band: [null],
+      shift: [null]
     });
   }
 
   goBack() {
-    this.nav.navigateBack(['/tabs/tab1']);
+    this.nav.navigateBack(['/tabs/tab2']);
   }
 
   async ngOnInit() {
@@ -43,61 +44,63 @@ export class MusicComponent implements OnInit {
 
   mount() {
     this.route.queryParams.subscribe(params => {
-      let music;
+      let worship;
 
-      if (!params || !params.music) {
+      if (!params || !params.worship) {
         return;
       }
 
-      music = JSON.parse(params.music);
+      worship = JSON.parse(params.worship);
 
-      if (music) {
-        this.musicForm = this.formBuilder.group({
-          id: [music.id],
-          name: [music.name],
-          artist: [music.artist]
+      if (worship) {
+        this.worshipForm = this.formBuilder.group({
+          id: [worship.id],
+          date: [worship.date],
+          band: [worship.band],
+          shift: [worship.shift]
         })
       }
     });
   }
 
-  async saveMusic() {
-    let message = 'Música cadastrada com sucesso!';
-    const music = {
-      id: this.musicForm.value.id || new Date().getTime().toString(),
-      name: this.musicForm.value.name,
-      artist: this.musicForm.value.artist
+  async saveWorship() {
+    let message = 'Culto cadastrado com sucesso!';
+    const worship = {
+      id: this.worshipForm.value.id || new Date().getTime().toString(),
+      date: this.worshipForm.value.date,
+      band: this.worshipForm.value.band,
+      shift: this.worshipForm.value.shift
     };
 
     await this.presentLoading();
 
-    let musicObservable = this.af
-      .collection("musics")
-      .doc(music.id);
+    let worshipObservable = this.af
+      .collection("worships")
+      .doc(worship.id);
 
-    if (this.musicForm.value.id) {
-      message = 'Música alterada com sucesso!';
-    }  
+    if (this.worshipForm.value.id) {
+      message = 'Culto alterado com sucesso!';
+    }
 
-    await musicObservable.set(music);
+    await worshipObservable.set(worship);
     await this.dismissLoading();
     this.presentAlertConfirm(message);
   }
 
-  async removeMusic() {
-    const music = {
-      id: this.musicForm.value.id || new Date().getTime().toString(),
+  async removeWorship() {
+    const worship = {
+      id: this.worshipForm.value.id || new Date().getTime().toString(),
     };
 
     await this.presentLoading();
 
-    let musicObservable = this.af
-      .collection("musics")
-      .doc(music.id);
+    let worshipObservable = this.af
+      .collection("worships")
+      .doc(worship.id);
 
-    await musicObservable.delete();
+    await worshipObservable.delete();
     await this.dismissLoading();
-    this.presentAlertConfirm('Música removida com sucesso!');
+    this.presentAlertConfirm('Culto removido com sucesso!');
   }
 
   async presentAlertConfirm(message) {
@@ -117,22 +120,22 @@ export class MusicComponent implements OnInit {
     await alert.present();
   }
 
-  async presentAlertRemoveMusic() {
+  async presentAlertRemoveWorship() {
     const alert = await this.alertController.create({
       header: 'Atenção',
-      message: 'Você deseja excluir esta música?',
+      message: 'Você deseja excluir este Culto?',
       buttons: [
         {
           text: 'Sim',
           cssClass: 'color-danger',
           handler: () => {
-            this.removeMusic();
+            this.removeWorship();
           }
         },
         {
           text: 'Não',
           handler: () => {
-            
+
           }
         }
       ]

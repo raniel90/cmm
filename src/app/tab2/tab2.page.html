@@ -1,9 +1,32 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab Two
-    </ion-title>
+    <ion-title>Cultos</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button color="light" (click)="addWorship()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
+      refreshingText="Atualizando cultos...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <br>
+
+  <ion-list style="margin-top:-2vh;margin-bottom:-2vh" no-padding *ngFor="let worship of worships">
+    <ion-card no-padding style="background-color: #f4f5f8" (click)="editWorship(worship)">
+      <ion-card-header>
+        <ion-card-subtitle>{{ worship.date | date:'dd/MM/y' }}</ion-card-subtitle>
+        <ion-card-title style="text-transform: capitalize">{{ worship.band }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <span>Turno: <b>{{ worship.shift }}</b></span>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

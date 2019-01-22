@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-title>Música</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="musicForm.value.id">
         <ion-button color="light" (click)="presentAlertRemoveMusic()">
             <ion-icon name="trash"></ion-icon>
         </ion-button>
