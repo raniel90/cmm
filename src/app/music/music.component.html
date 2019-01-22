@@ -2,27 +2,35 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Música</ion-title>
+    <ion-buttons slot="primary">
+        <ion-button color="light" (click)="presentAlertRemoveMusic()">
+            <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form [formGroup]="musicForm">
-    <ion-card class="welcome-card">
+    <ion-card>
       <ion-card-header>
-        <ion-card-title *ngIf="isNew">Nova Música</ion-card-title>
-        <ion-card-title *ngIf="!isNew">Alterar Música</ion-card-title>
+        <ion-card-title>Nome da música</ion-card-title>
         <ion-item no-padding style="margin-top:1vh">
           <ion-input formControlName="name" required type="text" placeholder="Digite o nome da música"></ion-input>
         </ion-item>
+        <ion-card-title style="margin-top:1vh">Artista</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+            <ion-input formControlName="artist" required type="text" placeholder="Digite o nome do artista/banda"></ion-input>
+          </ion-item>
       </ion-card-header>
       <ion-card-content>
         <ion-row style="text-align: right">
           <ion-col>
-            <ion-button shape="round" color="primary" [disabled]="musicForm.invalid" (click)="addMusic()" fill="outline">Salvar</ion-button>
+            <ion-button shape="round" color="primary" [disabled]="musicForm.invalid" (click)="saveMusic()" fill="outline">Salvar</ion-button>
           </ion-col>
         </ion-row>
       </ion-card-content>

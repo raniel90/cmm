@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Músicas</ion-title>
     <ion-buttons slot="primary">
-      <ion-button color="primary" (click)="addMusic()">
+      <ion-button color="light" (click)="addMusic()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -10,16 +10,25 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar debounce="500" showCancelButton cancelButtonText="Cancelar" animated [(ngModel)]="filter.name"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar músicas" debounce="500" showCancelButton cancelButtonText="Cancelar" animated [(ngModel)]="filter.name"></ion-searchbar>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
       refreshingText="Atualizando músicas...">
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-list style="padding-left:0.4rem;padding-right:2rem" *ngFor="let music of musics | filterName:filter">
-    <ion-item>
-      <ion-label>{{ music.name }}</ion-label>
-    </ion-item>
+  <ion-row>
+    <ion-col>
+
+    </ion-col>
+  </ion-row>
+
+  <ion-list style="margin-top:-2vh;margin-bottom:-2vh" no-padding *ngFor="let music of musics | filterName:filter">
+      <ion-card no-padding style="background-color: #f4f5f8" (click)="editMusic(music)">
+          <ion-card-header>
+            <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
+            <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
   </ion-list>
 </ion-content>

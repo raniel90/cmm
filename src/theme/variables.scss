@@ -74,4 +74,21 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /** toolbar **/
+  --ion-toolbar-background: #69bb7b;
+  --ion-toolbar-border-color: #69bb7b;
+  --ion-toolbar-color: #f5f6f9 !important;
+  --ion-toolbar-color-activated: #f5f6f9 !important;
+  --ion-toolbar-color-unchecked: #f5f6f9 !important;
+  --ion-toolbar-color-checked: #f5f6f9 !important;
+}
+
+.searchbar-input {
+  background-color: #f4f5f8 !important;
+}
+
+.color-danger {
+  font-weight: 700;
+  color: #f04141 !important;
 }
