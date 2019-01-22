@@ -10,21 +10,23 @@
 </ion-header>
 
 <ion-content>
-  <ion-card class="welcome-card">
-    <ion-card-header>
-      <ion-card-title *ngIf="isNew">Nova Música</ion-card-title>
-      <ion-card-title *ngIf="!isNew">Alterar Música</ion-card-title>
-      <ion-item no-padding style="margin-top:1vh">
-        <ion-input required type="text" placeholder="Informe uma música"></ion-input>
-      </ion-item>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-row style="text-align: right">
-        <ion-col>
-          <ion-button shape="round" color="primary" fill="outline">Salvar</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+  <form [formGroup]="musicForm">
+    <ion-card class="welcome-card">
+      <ion-card-header>
+        <ion-card-title *ngIf="isNew">Nova Música</ion-card-title>
+        <ion-card-title *ngIf="!isNew">Alterar Música</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+          <ion-input formControlName="name" required type="text" placeholder="Digite o nome da música"></ion-input>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-row style="text-align: right">
+          <ion-col>
+            <ion-button shape="round" color="primary" [disabled]="musicForm.invalid" (click)="addMusic()" fill="outline">Salvar</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </form>
 
 </ion-content>
