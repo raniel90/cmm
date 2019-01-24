@@ -28,7 +28,8 @@ export class MusicComponent implements OnInit {
     this.musicForm = this.formBuilder.group({
       id: [null],
       name: [null],
-      artist: [null]
+      artist: [null],
+      anthem: [null]
     });
   }
 
@@ -55,7 +56,8 @@ export class MusicComponent implements OnInit {
         this.musicForm = this.formBuilder.group({
           id: [music.id],
           name: [music.name],
-          artist: [music.artist]
+          artist: [music.artist],
+          anthem: [music.anthem]
         })
       }
     });
@@ -66,7 +68,8 @@ export class MusicComponent implements OnInit {
     const music = {
       id: this.musicForm.value.id || new Date().getTime().toString(),
       name: this.musicForm.value.name,
-      artist: this.musicForm.value.artist
+      artist: this.musicForm.value.artist,
+      anthem: this.musicForm.value.anthem
     };
 
     await this.presentLoading();

@@ -2,3 +2,5 @@ node_modules/
 .vscode/
 public/
 www/
+resources/
+plugins/

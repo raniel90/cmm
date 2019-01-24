@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-worship',
@@ -20,17 +21,25 @@ export class WorshipPage implements OnInit {
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private nav: NavController,
-    private loadingController: LoadingController
-  ) {
-  }
+    private loadingController: LoadingController,
+    private storage: Storage) { }
 
   initForm() {
     this.worshipForm = this.formBuilder.group({
       id: [null],
       date: [new Date().toISOString()],
       band: [null],
-      shift: [null]
+      shift: [null],
+      musics: [[]]
     });
+  }
+ 
+  async ionViewDidEnter() {
+    let musics = await this.storage.get('musics');
+
+    if (musics) {
+      this.worshipForm.value.musics = JSON.parse(musics);
+    }
   }
 
   goBack() {
@@ -57,7 +66,8 @@ export class WorshipPage implements OnInit {
           id: [worship.id],
           date: [worship.date],
           band: [worship.band],
-          shift: [worship.shift]
+          shift: [worship.shift],
+          musics: [[worship.musics || []]]
         })
       }
     });
@@ -69,7 +79,8 @@ export class WorshipPage implements OnInit {
       id: this.worshipForm.value.id || new Date().getTime().toString(),
       date: this.worshipForm.value.date,
       band: this.worshipForm.value.band,
-      shift: this.worshipForm.value.shift
+      shift: this.worshipForm.value.shift,
+      musics: this.worshipForm.value.musics
     };
 
     await this.presentLoading();
@@ -84,6 +95,7 @@ export class WorshipPage implements OnInit {
 
     await worshipObservable.set(worship);
     await this.dismissLoading();
+    await this.storage.remove('musics');
     this.presentAlertConfirm(message);
   }
 
@@ -157,4 +169,8 @@ export class WorshipPage implements OnInit {
     }
   }
 
+  addMusics() {
+    this.storage.set('musics', JSON.stringify(this.worshipForm.value.musics));
+    this.nav.navigateForward(['/select-music']);
+  }
 }

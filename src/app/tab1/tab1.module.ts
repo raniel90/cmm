@@ -4,15 +4,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab1Page } from './tab1.page';
-import { FilterNamePipe } from '../filter-name.pipe';
+import { ApplicationPipesModule } from '../pipes/application-pipes.module';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
+    ApplicationPipesModule,
     RouterModule.forChild([{ path: '', component: Tab1Page }])
   ],
-  declarations: [Tab1Page, FilterNamePipe]
+  declarations: [Tab1Page]
 })
 export class Tab1PageModule {}

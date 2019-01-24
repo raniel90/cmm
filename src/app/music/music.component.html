@@ -7,10 +7,10 @@
     </ion-buttons>
     <ion-title>Música</ion-title>
     <ion-buttons slot="primary" *ngIf="musicForm.value.id">
-        <ion-button color="light" (click)="presentAlertRemoveMusic()">
-            <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-buttons>
+      <ion-button color="light" (click)="presentAlertRemoveMusic()">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -24,8 +24,15 @@
         </ion-item>
         <ion-card-title style="margin-top:1vh">Artista</ion-card-title>
         <ion-item no-padding style="margin-top:1vh">
-            <ion-input formControlName="artist" required type="text" placeholder="Digite o nome do artista/banda"></ion-input>
-          </ion-item>
+          <ion-input formControlName="artist" required type="text" placeholder="Digite o nome do artista/banda"></ion-input>
+        </ion-item>
+        <ion-card-title style="margin-top:1vh">Hino</ion-card-title>
+        <ion-item no-padding style="margin-top:1vh">
+          <ion-select placeholder="Selecione" formControlName="anthem" required>
+            <ion-select-option value="Sim">Sim</ion-select-option>
+            <ion-select-option value="Não">Não</ion-select-option>
+          </ion-select>
+        </ion-item>
       </ion-card-header>
       <ion-card-content>
         <ion-row style="text-align: right">

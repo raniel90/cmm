@@ -1,5 +1,7 @@
 {
   "name": "cmm",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

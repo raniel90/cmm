@@ -38,11 +38,15 @@
             <ion-select-option value="Noturno">Noturno</ion-select-option>
           </ion-select>
         </ion-item>
+          
       </ion-card-header>
       <ion-card-content>
-        <ion-row style="text-align: right">
+        <ion-row>
           <ion-col>
-            <ion-button shape="round" color="primary" [disabled]="worshipForm.invalid" (click)="saveWorship()" fill="outline">Salvar</ion-button>
+              <ion-button shape="round" color="secondary" (click)="addMusics()" expand="full">Repertório</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button shape="round" color="primary" expand="full" [disabled]="worshipForm.invalid" (click)="saveWorship()">Salvar</ion-button>
           </ion-col>
         </ion-row>
       </ion-card-content>
