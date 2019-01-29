@@ -3,8 +3,8 @@ Church Music Manager
 
 # Requirements
 
-1 - Create a project on firebase console.
-2 - Paste firebase config on `environment.ts` and `enviroment.prod.ts` (for `--prod`)
+##### Create a project on firebase console.
+##### Paste firebase config on `environment.ts` and `enviroment.prod.ts` (for `--prod`)
 
 ## Run Project
 
