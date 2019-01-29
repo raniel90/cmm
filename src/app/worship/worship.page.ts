@@ -12,8 +12,9 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./worship.page.scss'],
 })
 export class WorshipPage implements OnInit {
-  loading: any;
-  worshipForm: FormGroup;
+  public worship;
+  public loading: any;
+  public worshipForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,12 +34,17 @@ export class WorshipPage implements OnInit {
       musics: [[]]
     });
   }
- 
+
+  async ngOnDestroy() {
+    await this.storage.remove('worship');
+    await this.storage.remove('musics');
+  }
+
   async ionViewDidEnter() {
     let musics = await this.storage.get('musics');
 
     if (musics) {
-      this.worshipForm.value.musics = JSON.parse(musics);
+      this.worshipForm.value.musics = JSON.parse(musics) || [];
     }
   }
 
@@ -48,29 +54,27 @@ export class WorshipPage implements OnInit {
 
   async ngOnInit() {
     this.initForm();
-    this.mount();
+    await this.mount();
   }
 
-  mount() {
-    this.route.queryParams.subscribe(params => {
-      let worship;
+  async mount() {
+    let worship = await this.storage.get('worship');
 
-      if (!params || !params.worship) {
-        return;
-      }
+    if (!worship) {
+      return;
+    }
 
-      worship = JSON.parse(params.worship);
+    worship = JSON.parse(worship);
 
-      if (worship) {
-        this.worshipForm = this.formBuilder.group({
-          id: [worship.id],
-          date: [worship.date],
-          band: [worship.band],
-          shift: [worship.shift],
-          musics: [[worship.musics || []]]
-        })
-      }
-    });
+    if (worship) {
+      this.worshipForm = this.formBuilder.group({
+        id: [worship.id],
+        date: [worship.date],
+        band: [worship.band],
+        shift: [worship.shift],
+        musics: [worship.musics]
+      })
+    }
   }
 
   async saveWorship() {
@@ -82,6 +86,11 @@ export class WorshipPage implements OnInit {
       shift: this.worshipForm.value.shift,
       musics: this.worshipForm.value.musics
     };
+
+    if (!worship.musics || !worship.musics.length) {
+      await this.presentAlert("Por favor, selecione pelo menos uma música");
+      return;
+    }
 
     await this.presentLoading();
 
@@ -113,6 +122,22 @@ export class WorshipPage implements OnInit {
     await worshipObservable.delete();
     await this.dismissLoading();
     this.presentAlertConfirm('Culto removido com sucesso!');
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      header: 'Atenção',
+      message: message,
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async presentAlertConfirm(message) {

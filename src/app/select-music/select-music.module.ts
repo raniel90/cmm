@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { SelectMusicPage } from './select-music.page';
+import { ApplicationPipesModule } from '../pipes/application-pipes.module';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    ApplicationPipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [SelectMusicPage]

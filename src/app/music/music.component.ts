@@ -80,7 +80,7 @@ export class MusicComponent implements OnInit {
 
     if (this.musicForm.value.id) {
       message = 'Música alterada com sucesso!';
-    }  
+    }
 
     await musicObservable.set(music);
     await this.dismissLoading();
@@ -135,7 +135,7 @@ export class MusicComponent implements OnInit {
         {
           text: 'Não',
           handler: () => {
-            
+
           }
         }
       ]

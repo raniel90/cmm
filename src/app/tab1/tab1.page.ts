@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 })
 export class Tab1Page implements OnInit {
   public musics: any;
+  public musicsTemp: any;
   public filter = {
     name: ''
   };
@@ -24,7 +25,7 @@ export class Tab1Page implements OnInit {
 
   ionViewDidEnter() {
     this.list();
-  } 
+  }
 
   addMusic() {
     this.nav.navigateForward(['/music']);
@@ -36,8 +37,10 @@ export class Tab1Page implements OnInit {
 
   async list() {
     this.musics = await this.getValueFromObservable(
-      this.af.collection('musics', ref => ref.orderBy('name', 'asc')).valueChanges()
+      this.af.collection('musics', ref =>
+        ref.orderBy('name', 'asc')).valueChanges()
     );
+    this.musicsTemp = this.musics;
   }
 
   async doRefresh(event) {
@@ -53,6 +56,24 @@ export class Tab1Page implements OnInit {
       observable.subscribe(data => {
         resolve(data);
       });
+    });
+  }
+
+  async filterByCategory($event) {
+    this.musics = this.musicsTemp.filter((music) => {
+      if ($event.detail.value === 'anthem' && music.anthem === "Sim") {
+        return true;
+      }
+
+      if ($event.detail.value === 'song' && music.anthem === "Não") {
+        return true;
+      }
+
+      if ($event.detail.value === 'all') {
+        return true;
+      }
+
+      return false;
     });
   }
 }

@@ -6,12 +6,22 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FilterNamePipe implements PipeTransform {
     transform(items: any[], filter: any): any {
-        if (!items || !filter) {
+        if (!items) {
             return items;
         }
 
-        // filter items array, items which match and return true will be
-        // kept, false will be filtered out
-        return items.filter(item => item.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1 || item.artist.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1);
+        return items.map(item => {
+            item.hidden = false;
+
+            if (!filter || !filter.name) {
+                return item;
+            }
+
+            if ((item.name.toLowerCase().indexOf(filter.name.toLowerCase()) === -1) && (item.artist.toLowerCase().indexOf(filter.name.toLowerCase()) === -1)) {
+                item.hidden = true;
+            }
+
+            return item;
+        });
     }
 }

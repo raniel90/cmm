@@ -10,7 +10,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar placeholder="Filtrar músicas" debounce="500" showCancelButton cancelButtonText="Cancelar" animated [(ngModel)]="filter.name"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" showCancelButton cancelButtonText="Cancelar"
+    animated [(ngModel)]="filter.name"></ion-searchbar>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
       refreshingText="Atualizando músicas...">
@@ -23,12 +24,33 @@
     </ion-col>
   </ion-row>
 
-  <ion-list style="margin-top:-2vh;margin-bottom:-2vh" no-padding *ngFor="let music of musics | filterName:filter">
-      <ion-card no-padding style="background-color: #f4f5f8" (click)="editMusic(music)">
-          <ion-card-header>
-            <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
-            <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
-          </ion-card-header>
-        </ion-card>
+  <ion-row style="margin-left:1vh;margin-right:1vh">
+    <ion-col>
+      <ion-segment (ionChange)="filterByCategory($event)">
+        <ion-segment-button value="all">
+          <ion-label>Todos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="song">
+          <ion-label>Louvores</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="anthem">
+          <ion-label>Hinos</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-col>
+  </ion-row>
+
+  <ion-list style="margin-bottom:-2vh" no-padding *ngFor="let music of musics | filterNameDefault:filter">
+    <ion-card no-padding style="background-color: #f4f5f8" (click)="editMusic(music)">
+      <ion-card-header>
+        <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
+        <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item no-padding lines="none" color="light">
+          <ion-badge *ngIf="(music.anthem === 'Sim')" slot="start" color="secondary">Hino</ion-badge>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
   </ion-list>
 </ion-content>

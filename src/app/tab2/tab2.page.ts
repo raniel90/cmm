@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
@@ -15,7 +16,8 @@ export class Tab2Page implements OnInit {
 
   constructor(
     private af: AngularFirestore,
-    private nav: NavController) {
+    private nav: NavController,
+    private storage: Storage) {
   }
 
   async ngOnInit() {
@@ -30,8 +32,9 @@ export class Tab2Page implements OnInit {
     this.nav.navigateForward(['/worship']);
   }
 
-  editWorship(worship) {
-    this.nav.navigateForward(['/worship'], { queryParams: { worship: JSON.stringify(worship) } });
+  async editWorship(worship) {
+    await this.storage.set('worship', JSON.stringify(worship));
+    this.nav.navigateForward(['/worship']);
   }
 
   async list() {
