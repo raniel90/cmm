@@ -1,10 +1,16 @@
 # CMM
 Church Music Manager
 
+# Requirements
+
+1 - Create a project on firebase console.
+2 - Paste firebase config on `environment.ts` and `enviroment.prod.ts` (for `--prod`)
+
 ## Run Project
 
 ```
 npm install
+npm install -g firebase-tools
 ionic serve
 ```
 
