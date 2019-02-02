@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Músicas</ion-title>
     <ion-buttons slot="primary">
-      <ion-button color="light" (click)="addMusic()">
+      <ion-button (click)="addMusic()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -26,7 +26,7 @@
 
   <ion-row style="margin-left:1vh;margin-right:1vh">
     <ion-col>
-      <ion-segment (ionChange)="filterByCategory($event)">
+      <ion-segment (ionChange)="filterByCategory($event)" [(ngModel)]="selectedSegment">
         <ion-segment-button value="all">
           <ion-label>Todos</ion-label>
         </ion-segment-button>
@@ -40,7 +40,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-list style="margin-bottom:-2vh" no-padding *ngFor="let music of musics | filterNameDefault:filter">
+  <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let music of musics | filterNameDefault:filter">
     <ion-card no-padding style="background-color: #f4f5f8" (click)="editMusic(music)">
       <ion-card-header>
         <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>

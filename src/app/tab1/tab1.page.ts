@@ -13,6 +13,7 @@ export class Tab1Page implements OnInit {
   public filter = {
     name: ''
   };
+  public selectedSegment = 'all';
 
   constructor(
     private af: AngularFirestore,
@@ -43,8 +44,24 @@ export class Tab1Page implements OnInit {
     this.musicsTemp = this.musics;
   }
 
+  async listByFilter() {
+    let filter = {
+      anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
+    };
+
+    this.musics = await this.getValueFromObservable(
+      this.af.collection('musics', ref => ref
+        .where('anthem', '==', filter.anthem)
+        .orderBy('name', 'asc')).valueChanges()
+    );
+  }
+
   async doRefresh(event) {
-    await this.list();
+    if (this.selectedSegment === 'all') {
+      await this.list();
+    } else {
+      this.listByFilter();
+    }
 
     setTimeout(() => {
       event.target.complete();
@@ -61,15 +78,16 @@ export class Tab1Page implements OnInit {
 
   async filterByCategory($event) {
     this.musics = this.musicsTemp.filter((music) => {
-      if ($event.detail.value === 'anthem' && music.anthem === "Sim") {
+      this.selectedSegment = $event.detail.value;
+      if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
         return true;
       }
 
-      if ($event.detail.value === 'song' && music.anthem === "Não") {
+      if (this.selectedSegment === 'song' && music.anthem === "Não") {
         return true;
       }
 
-      if ($event.detail.value === 'all') {
+      if (this.selectedSegment === 'all') {
         return true;
       }
 

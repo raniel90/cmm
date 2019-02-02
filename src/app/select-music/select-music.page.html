@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="goBack()">
-        <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Repertório</ion-title>
@@ -20,12 +20,13 @@
 
   <ion-row>
     <ion-col>
+
     </ion-col>
   </ion-row>
 
   <ion-row style="margin-left:1vh;margin-right:1vh">
     <ion-col>
-      <ion-segment (ionChange)="filterByCategory($event)">
+      <ion-segment (ionChange)="filterByCategory($event)" [(ngModel)]="selectedSegment">
         <ion-segment-button value="all">
           <ion-label>Todos</ion-label>
         </ion-segment-button>
@@ -39,7 +40,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-list style="margin-bottom:-2vh" no-padding *ngFor="let music of musics | filterName:filter; let i = index"
+  <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let music of musics | filterName:filter; let i = index"
     [attr.data-index]="i">
     <ion-card no-padding style="background-color: #f4f5f8" (click)="selectMusic(music, i)" *ngIf="!music.hidden">
       <ion-card-header>
