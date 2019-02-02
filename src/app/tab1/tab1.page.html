@@ -45,12 +45,10 @@
       <ion-card-header>
         <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
         <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item no-padding lines="none" color="light">
-          <ion-badge *ngIf="(music.anthem === 'Sim')" slot="start" color="secondary">Hino</ion-badge>
+        <ion-item *ngIf="(music.anthem === 'Sim')" no-padding lines="none" color="light">
+          <ion-badge slot="start" color="secondary">Hino</ion-badge>
         </ion-item>
-      </ion-card-content>
+      </ion-card-header>
     </ion-card>
   </ion-list>
 </ion-content>
