@@ -15,6 +15,7 @@ export class SelectMusicPage implements OnInit {
     name: ''
   };
   public selectedSegment = 'all';
+  public isEdit = false;
 
   constructor(
     private navController: NavController,
@@ -34,9 +35,14 @@ export class SelectMusicPage implements OnInit {
     if (musicsSaved) {
       musicsSaved = JSON.parse(musicsSaved);
 
-      musicsSaved.forEach((musicSaved) => {
-        musicsSavedById[musicSaved.id] = musicSaved;
-      });
+      if (musicsSaved.length) {
+        this.selectedSegment = 'saved';
+        this.isEdit = true;
+
+        musicsSaved.forEach((musicSaved) => {
+          musicsSavedById[musicSaved.id] = musicSaved;
+        });
+      }
     }
 
     this.musics = this.musics.map((music) => {
@@ -72,6 +78,10 @@ export class SelectMusicPage implements OnInit {
 
   selectMusic(music, index) {
     this.musics[index].selected = !music.selected;
+
+    if (this.selectedSegment === 'saved') {
+      this.filterMusicsBySegment();
+    }
   }
 
   goBack() {
@@ -101,8 +111,12 @@ export class SelectMusicPage implements OnInit {
   }
 
   async filterByCategory($event) {
+    this.selectedSegment = $event.detail.value;
+    this.filterMusicsBySegment();
+  }
+
+  filterMusicsBySegment() {
     this.musics = this.musicsTemp.filter((music) => {
-      this.selectedSegment = $event.detail.value;
       if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
         return true;
       }
@@ -112,6 +126,10 @@ export class SelectMusicPage implements OnInit {
       }
 
       if (this.selectedSegment === 'all') {
+        return true;
+      }
+
+      if (this.selectedSegment === 'saved' && music.selected) {
         return true;
       }
 

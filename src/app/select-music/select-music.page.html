@@ -30,6 +30,9 @@
         <ion-segment-button value="all">
           <ion-label>Todos</ion-label>
         </ion-segment-button>
+        <ion-segment-button *ngIf="isEdit" value="saved">
+            <ion-label>Salvos</ion-label>
+          </ion-segment-button>
         <ion-segment-button value="song">
           <ion-label>Louvores</ion-label>
         </ion-segment-button>
