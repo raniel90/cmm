@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" showCancelButton cancelButtonText="Cancelar"
+  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" cancelButtonText="Cancelar"
     animated [(ngModel)]="filter.name"></ion-searchbar>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"

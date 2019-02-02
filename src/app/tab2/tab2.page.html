@@ -18,15 +18,16 @@
 
   <br>
 
-  <ion-list style="margin-top:-2vh;margin-bottom:-2vh" no-padding *ngFor="let worship of worships">
+  <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let worship of worships">
     <ion-card no-padding style="background-color: #f4f5f8" (click)="editWorship(worship)">
       <ion-card-header>
         <ion-card-subtitle>{{ worship.date | date:'dd/MM/y' }}</ion-card-subtitle>
         <ion-card-title style="text-transform: capitalize">{{ worship.band }}</ion-card-title>
+        <ion-item no-padding lines="none" color="light">
+          <ion-badge *ngIf="(worship.shift === 'Matutino')" slot="start" color="secondary">Matutino</ion-badge>
+          <ion-badge *ngIf="(worship.shift === 'Noturno')" slot="start" color="tertiary">Noturno</ion-badge>
+        </ion-item>
       </ion-card-header>
-      <ion-card-content>
-        <span>Turno: <b>{{ worship.shift }}</b></span>
-      </ion-card-content>
     </ion-card>
   </ion-list>
 </ion-content>

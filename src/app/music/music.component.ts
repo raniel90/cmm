@@ -88,15 +88,21 @@ export class MusicComponent implements OnInit {
   }
 
   async removeMusic() {
-    const music = {
-      id: this.musicForm.value.id || new Date().getTime().toString(),
-    };
+    let hasMusicInPlaylist: any;
 
     await this.presentLoading();
 
+    hasMusicInPlaylist = await this.hasMusicInPlaylist();
+
+    if (hasMusicInPlaylist) {
+      await this.dismissLoading();
+      await this.presentAlert('Não é possível remover esta música, pois ela já está cadastrada em um culto!');
+      return;
+    }
+
     let musicObservable = this.af
       .collection("musics")
-      .doc(music.id);
+      .doc(this.musicForm.value.id);
 
     await musicObservable.delete();
     await this.dismissLoading();
@@ -112,6 +118,22 @@ export class MusicComponent implements OnInit {
           text: 'OK',
           handler: () => {
             this.goBack();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      header: 'Atenção',
+      message: message,
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
           }
         }
       ]
@@ -155,6 +177,31 @@ export class MusicComponent implements OnInit {
     if (this.loading) {
       await this.loading.dismiss();
     }
+  }
+
+  async hasMusicInPlaylist() {
+    let hasMusicInPlaylist = false;
+
+    const musicFromPlaylist: any = await this.getValueFromObservable(
+      this.af.collection('playlists', ref => ref
+        .where('music_id', '==', this.musicForm.value.id)
+        .limit(1))
+        .valueChanges()
+    );
+
+    if (musicFromPlaylist && musicFromPlaylist.length) {
+      hasMusicInPlaylist = true;
+    }
+
+    return hasMusicInPlaylist;
+  }
+
+  async getValueFromObservable(observable) {
+    return await new Promise(resolve => {
+      observable.subscribe(data => {
+        resolve(data);
+      });
+    });
   }
 
 }
