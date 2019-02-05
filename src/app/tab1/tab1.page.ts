@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab1',
@@ -17,14 +18,29 @@ export class Tab1Page implements OnInit {
 
   constructor(
     private af: AngularFirestore,
-    private nav: NavController) {
+    private nav: NavController,
+    private storage: Storage) {
   }
 
   async ngOnInit() {
     this.list();
   }
 
-  ionViewDidEnter() {
+  /**
+   * Workaround for tabs
+   */
+  async redirectAfterAction() {
+    const goToTab2 = await this.storage.get('goToTab2');
+
+    if (goToTab2 === 'true') {
+      await this.storage.set('goToTab1', 'true');
+      await this.storage.remove('goToTab2');
+      this.nav.navigateRoot(['/tabs/tab2']);
+    }
+  }
+
+  async ionViewDidEnter() {
+    await this.redirectAfterAction();
     this.list();
   }
 

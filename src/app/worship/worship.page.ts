@@ -49,7 +49,8 @@ export class WorshipPage implements OnInit {
   }
 
   goBack() {
-    this.nav.navigateBack(['/tabs/tab2']);
+    this.storage.set('goToTab2', 'true');
+    this.nav.navigateBack(['/tabs']);
   }
 
   async ngOnInit() {

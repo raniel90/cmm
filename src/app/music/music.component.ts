@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-music',
@@ -20,7 +21,8 @@ export class MusicComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private nav: NavController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private storage: Storage
   ) {
   }
 
@@ -34,7 +36,7 @@ export class MusicComponent implements OnInit {
   }
 
   goBack() {
-    this.nav.navigateBack(['/tabs/tab1']);
+    this.nav.navigateRoot(['/tabs']);
   }
 
   async ngOnInit() {
