@@ -55,12 +55,13 @@ export class Tab2Page implements OnInit {
   }
 
   applyFilter() {
-    let date = null;
-    let startDate = null;
-    let endDate = null;
     const filter = this.worshipFilter || {};
 
     this.worships = this.worshipsTemp.filter((worship) => {
+      let date = null;
+      let startDate = null;
+      let endDate = null;
+
       if (filter.start_date && filter.end_date) {
         date = moment(moment(worship.date).format('YYYY-MM-DD'), 'YYYY-MM-DD');
         startDate = moment(filter.start_date).format('YYYY-MM-DD');
