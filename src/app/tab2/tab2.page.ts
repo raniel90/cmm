@@ -27,13 +27,15 @@ export class Tab2Page implements OnInit {
     this.list();
   }
 
-  async ionViewDidEnter() {
+  async ionViewWillEnter() {
+
     let worshipFilter = await this.storage.get('worshipFilter');
 
     if (worshipFilter) {
       this.worshipFilter = JSON.parse(worshipFilter);
       this.storage.remove('worshipFilter');
-      setTimeout(() => { this.applyFilter() })
+      this.worships = [];
+      this.applyFilter();
     } else {
       await this.list();
     }
@@ -53,15 +55,20 @@ export class Tab2Page implements OnInit {
   }
 
   applyFilter() {
+    let date = null;
+    let startDate = null;
+    let endDate = null;
     const filter = this.worshipFilter || {};
 
     this.worships = this.worshipsTemp.filter((worship) => {
-      if (filter.start_date && moment().isAfter(moment(filter.start_date))) {
-        return false;
-      }
+      if (filter.start_date && filter.end_date) {
+        date = moment(moment(worship.date).format('YYYY-MM-DD'), 'YYYY-MM-DD');
+        startDate = moment(filter.start_date).format('YYYY-MM-DD');
+        endDate = moment(filter.end_date).format('YYYY-MM-DD');
 
-      if (filter.end_date && moment().isBefore(moment(filter.end_date))) {
-        return false;
+        if (!date.isBetween(startDate, endDate, null, '[]')) {
+          return false;
+        }
       }
 
       if (filter.band && worship.band !== filter.band) {

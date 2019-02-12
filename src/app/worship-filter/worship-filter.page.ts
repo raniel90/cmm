@@ -31,9 +31,19 @@ export class WorshipFilterPage implements OnInit {
       return;
     }
 
+    if ((!this.filter.start_date && this.filter.end_date)) {
+      await this.presentAlert('Por favor, preencha a data inicial!');
+      return;
+    }
+
+    if ((this.filter.start_date && !this.filter.end_date)) {
+      await this.presentAlert('Por favor, preencha a data de término!');
+      return;
+    }
+
     this.storage.set('worshipFilter', JSON.stringify(this.filter));
     this.storage.set('goToTab2', 'true');
-    this.navController.navigateRoot(['/tabs']);
+    this.navController.navigateBack(['/tabs']);
   }
 
   async presentAlert(message) {
