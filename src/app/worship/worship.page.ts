@@ -49,7 +49,8 @@ export class WorshipPage implements OnInit {
   }
 
   goBack() {
-    this.nav.navigateBack(['/tabs/tab2']);
+    this.storage.set('goToTab2', 'true');
+    this.nav.navigateBack(['/tabs']);
   }
 
   async ngOnInit() {
@@ -103,9 +104,30 @@ export class WorshipPage implements OnInit {
     }
 
     await worshipObservable.set(worship);
-    await this.dismissLoading();
+    await this.savePlaylist(worship);
     await this.storage.remove('musics');
+    await this.dismissLoading();
     this.presentAlertConfirm(message);
+  }
+
+  async savePlaylist(worship) {
+    const isEdit = this.worshipForm.value.id ? true : false;
+
+    if (isEdit) {
+      await this.removePlaylist(worship.id);
+    }
+
+    await worship.musics.forEach((music) => {
+      const observable = this.af
+        .collection("playlists")
+        .doc(`${music.id}_${worship.id}`);
+
+      observable.set({
+        music_id: music.id,
+        worship_id: worship.id,
+        date: worship.date
+      });
+    });
   }
 
   async removeWorship() {
@@ -120,8 +142,30 @@ export class WorshipPage implements OnInit {
       .doc(worship.id);
 
     await worshipObservable.delete();
+    await this.removePlaylist(worship.id);
+    await this.storage.remove('musics');
     await this.dismissLoading();
     this.presentAlertConfirm('Culto removido com sucesso!');
+  }
+
+  async removePlaylist(id) {
+    const docsToRemove: any = await this.getValueFromObservable(
+      this.af.collection('playlists', ref => ref
+        .where('worship_id', '==', id))
+        .valueChanges()
+    );
+
+    if (!docsToRemove) {
+      return;
+    }
+
+    await docsToRemove.forEach((doc) => {
+      const observable = this.af
+        .collection("playlists")
+        .doc(`${doc.music_id}_${doc.worship_id}`);
+
+      observable.delete();
+    });
   }
 
   async presentAlert(message) {
@@ -197,5 +241,13 @@ export class WorshipPage implements OnInit {
   addMusics() {
     this.storage.set('musics', JSON.stringify(this.worshipForm.value.musics));
     this.nav.navigateForward(['/select-music']);
+  }
+
+  async getValueFromObservable(observable) {
+    return await new Promise(resolve => {
+      observable.subscribe(data => {
+        resolve(data);
+      });
+    });
   }
 }

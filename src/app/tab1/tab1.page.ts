@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab1',
@@ -13,17 +14,33 @@ export class Tab1Page implements OnInit {
   public filter = {
     name: ''
   };
+  public selectedSegment = 'all';
 
   constructor(
     private af: AngularFirestore,
-    private nav: NavController) {
+    private nav: NavController,
+    private storage: Storage) {
   }
 
   async ngOnInit() {
     this.list();
   }
 
-  ionViewDidEnter() {
+  /**
+   * Workaround for tabs
+   */
+  async redirectAfterAction() {
+    const goToTab2 = await this.storage.get('goToTab2');
+
+    if (goToTab2 === 'true') {
+      await this.storage.set('goToTab1', 'true');
+      await this.storage.remove('goToTab2');
+      this.nav.navigateRoot(['/tabs/tab2']);
+    }
+  }
+
+  async ionViewDidEnter() {
+    await this.redirectAfterAction();
     this.list();
   }
 
@@ -43,8 +60,24 @@ export class Tab1Page implements OnInit {
     this.musicsTemp = this.musics;
   }
 
+  async listByFilter() {
+    let filter = {
+      anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
+    };
+
+    this.musics = await this.getValueFromObservable(
+      this.af.collection('musics', ref => ref
+        .where('anthem', '==', filter.anthem)
+        .orderBy('name', 'asc')).valueChanges()
+    );
+  }
+
   async doRefresh(event) {
-    await this.list();
+    if (this.selectedSegment === 'all') {
+      await this.list();
+    } else {
+      this.listByFilter();
+    }
 
     setTimeout(() => {
       event.target.complete();
@@ -61,15 +94,16 @@ export class Tab1Page implements OnInit {
 
   async filterByCategory($event) {
     this.musics = this.musicsTemp.filter((music) => {
-      if ($event.detail.value === 'anthem' && music.anthem === "Sim") {
+      this.selectedSegment = $event.detail.value;
+      if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
         return true;
       }
 
-      if ($event.detail.value === 'song' && music.anthem === "Não") {
+      if (this.selectedSegment === 'song' && music.anthem === "Não") {
         return true;
       }
 
-      if ($event.detail.value === 'all') {
+      if (this.selectedSegment === 'all') {
         return true;
       }
 

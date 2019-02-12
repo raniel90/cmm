@@ -2,12 +2,12 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="goBack()">
-        <ion-icon color="light" slot="icon-only" name="arrow-back"></ion-icon>
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Música</ion-title>
     <ion-buttons slot="primary" *ngIf="musicForm.value.id">
-      <ion-button color="light" (click)="presentAlertRemoveMusic()">
+      <ion-button (click)="presentAlertRemoveMusic()">
         <ion-icon name="trash"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -16,32 +16,44 @@
 
 <ion-content>
   <form [formGroup]="musicForm">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Nome da música</ion-card-title>
-        <ion-item no-padding style="margin-top:1vh">
-          <ion-input formControlName="name" required type="text" placeholder="Digite o nome da música"></ion-input>
+    <ion-row padding>
+      <ion-col style="margin-left:-1vh">
+        <ion-item>
+          <ion-label position="stacked" color="primary">
+            Artista/Banda
+          </ion-label>
+          <ion-input formControlName="artist" required placeholder="Digite o nome do artista/banda"></ion-input>
         </ion-item>
-        <ion-card-title style="margin-top:1vh">Artista</ion-card-title>
-        <ion-item no-padding style="margin-top:1vh">
-          <ion-input formControlName="artist" required type="text" placeholder="Digite o nome do artista/banda"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row padding>
+      <ion-col style="margin-left:-1vh">
+        <ion-item>
+          <ion-label position="stacked" color="primary">
+            Nome da música
+          </ion-label>
+          <ion-input formControlName="name" required placeholder="Digite o nome da música"></ion-input>
         </ion-item>
-        <ion-card-title style="margin-top:1vh">Hino</ion-card-title>
-        <ion-item no-padding style="margin-top:1vh">
+      </ion-col>
+    </ion-row>
+    <ion-row padding>
+      <ion-col style="margin-left:-1vh">
+        <ion-item>
+          <ion-label position="stacked" color="primary">
+            Hino
+          </ion-label>
           <ion-select placeholder="Selecione" formControlName="anthem" required>
             <ion-select-option value="Sim">Sim</ion-select-option>
             <ion-select-option value="Não">Não</ion-select-option>
           </ion-select>
         </ion-item>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-row style="text-align: right">
-          <ion-col>
-            <ion-button shape="round" color="primary" [disabled]="musicForm.invalid" (click)="saveMusic()" fill="outline">Salvar</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-card-content>
-    </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row padding>
+      <ion-col>
+        <ion-button [disabled]="musicForm.invalid" (click)="saveMusic()" expand="full">Salvar</ion-button>
+      </ion-col>
+    </ion-row>
   </form>
 
 </ion-content>
