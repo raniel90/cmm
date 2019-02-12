@@ -14,6 +14,8 @@ export class SelectMusicPage implements OnInit {
   public filter = {
     name: ''
   };
+  public selectedSegment = 'all';
+  public isEdit = false;
 
   constructor(
     private navController: NavController,
@@ -29,13 +31,18 @@ export class SelectMusicPage implements OnInit {
     let musicsSavedById = {};
     let musicsSaved = await this.storage.get('musics');
 
-    
+
     if (musicsSaved) {
       musicsSaved = JSON.parse(musicsSaved);
-      
-      musicsSaved.forEach((musicSaved) => {
-        musicsSavedById[musicSaved.id] = musicSaved;
-      });
+
+      if (musicsSaved.length) {
+        this.selectedSegment = 'saved';
+        this.isEdit = true;
+
+        musicsSaved.forEach((musicSaved) => {
+          musicsSavedById[musicSaved.id] = musicSaved;
+        });
+      }
     }
 
     this.musics = this.musics.map((music) => {
@@ -57,8 +64,24 @@ export class SelectMusicPage implements OnInit {
     this.musicsTemp = this.musics;
   }
 
+  async listByFilter() {
+    let filter = {
+      anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
+    };
+
+    this.musics = await this.getValueFromObservable(
+      this.af.collection('musics', ref => ref
+        .where('anthem', '==', filter.anthem)
+        .orderBy('name', 'asc')).valueChanges()
+    );
+  }
+
   selectMusic(music, index) {
     this.musics[index].selected = !music.selected;
+
+    if (this.selectedSegment === 'saved') {
+      this.filterMusicsBySegment();
+    }
   }
 
   goBack() {
@@ -68,7 +91,11 @@ export class SelectMusicPage implements OnInit {
   }
 
   async doRefresh(event) {
-    await this.list();
+    if (this.selectedSegment === 'all') {
+      await this.list();
+    } else {
+      this.listByFilter();
+    }
 
     setTimeout(() => {
       event.target.complete();
@@ -84,16 +111,25 @@ export class SelectMusicPage implements OnInit {
   }
 
   async filterByCategory($event) {
+    this.selectedSegment = $event.detail.value;
+    this.filterMusicsBySegment();
+  }
+
+  filterMusicsBySegment() {
     this.musics = this.musicsTemp.filter((music) => {
-      if ($event.detail.value === 'anthem' && music.anthem === "Sim") {
+      if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
         return true;
       }
 
-      if ($event.detail.value === 'song' && music.anthem === "Não") {
+      if (this.selectedSegment === 'song' && music.anthem === "Não") {
         return true;
       }
 
-      if ($event.detail.value === 'all') {
+      if (this.selectedSegment === 'all') {
+        return true;
+      }
+
+      if (this.selectedSegment === 'saved' && music.selected) {
         return true;
       }
 
