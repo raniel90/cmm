@@ -4,7 +4,6 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-music',
@@ -21,8 +20,7 @@ export class MusicComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private nav: NavController,
-    private loadingController: LoadingController,
-    private storage: Storage
+    private loadingController: LoadingController
   ) {
   }
 
@@ -30,8 +28,13 @@ export class MusicComponent implements OnInit {
     this.musicForm = this.formBuilder.group({
       id: [null],
       name: [null],
+      beginMusic: [null],
+      link: [null],
       artist: [null],
-      anthem: [null]
+      anthem: [null],
+      theme: [null],
+      tone: [null],
+      reference: [null]
     });
   }
 
@@ -58,8 +61,13 @@ export class MusicComponent implements OnInit {
         this.musicForm = this.formBuilder.group({
           id: [music.id],
           name: [music.name],
+          beginMusic: [music.beginMusic],
+          link: [music.link],
           artist: [music.artist],
-          anthem: [music.anthem]
+          anthem: [music.anthem],
+          theme: [music.theme],
+          tone: [music.tone],
+          reference: [music.reference],
         })
       }
     });
@@ -70,8 +78,13 @@ export class MusicComponent implements OnInit {
     const music = {
       id: this.musicForm.value.id || new Date().getTime().toString(),
       name: this.musicForm.value.name,
+      beginMusic: this.musicForm.value.beginMusic,
+      link: this.musicForm.value.link,
       artist: this.musicForm.value.artist,
-      anthem: this.musicForm.value.anthem
+      anthem: this.musicForm.value.anthem,
+      theme: this.musicForm.value.theme,
+      tone: this.musicForm.value.tone,
+      reference: this.musicForm.value.reference,
     };
 
     await this.presentLoading();
