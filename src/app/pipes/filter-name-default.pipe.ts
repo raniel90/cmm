@@ -12,26 +12,6 @@ export class FilterNameDefaultPipe implements PipeTransform {
 
         // filter items array, items which match and return true will be
         // kept, false will be filtered out
-        return items.filter(item => {
-            const themes = item.theme ? item.theme.join(',') : '';
-
-            if (item.name && item.name.toLowerCase().includes(filter.name.toLowerCase())) {
-                return true;
-            }
-
-            if (item.artist && item.artist.toLowerCase().includes(filter.name.toLowerCase())) {
-                return true;
-            }
-
-            if (item.beginMusic && item.beginMusic.toLowerCase().includes(filter.name.toLowerCase())) {
-                return true;
-            }
-
-            if (themes && themes.toLowerCase().includes(filter.name.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
+        return items.filter(item => item.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1 || item.artist.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1);
     }
 }

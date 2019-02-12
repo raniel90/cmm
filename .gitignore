@@ -4,6 +4,4 @@ public/
 www/
 resources/
 plugins/
-.firebase/
-src/environments/environment.ts
-src/environments/environment.prod.ts
+*_hosting*

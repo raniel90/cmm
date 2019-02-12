@@ -10,11 +10,11 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" cancelButtonText="Cancelar" animated
-    [(ngModel)]="filter.name"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" cancelButtonText="Cancelar"
+    animated [(ngModel)]="filter.name"></ion-searchbar>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar"
-      refreshingSpinner="circles" refreshingText="Atualizando músicas...">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
+      refreshingText="Atualizando músicas...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -41,17 +41,12 @@
   </ion-row>
 
   <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let music of musics | filterNameDefault:filter">
-    <ion-card no-padding style="background-color: #f4f5f8" (click)="showOptions(music)">
+    <ion-card no-padding style="background-color: #f4f5f8" (click)="editMusic(music)">
       <ion-card-header>
         <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
         <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
         <ion-item *ngIf="(music.anthem === 'Sim')" no-padding lines="none" color="light">
-          <ion-badge slot="start" color="tertiary">Hino</ion-badge>
-        </ion-item>
-        <ion-item text-wrap *ngIf="music.theme" no-padding lines="none" color="light">
-          <div class="container-theme-badge">
-            <ion-badge class="item-theme-badge" *ngFor="let item of music.theme" slot="start" color="secondary">{{ item }}</ion-badge>
-          </div>
+          <ion-badge slot="start" color="secondary">Hino</ion-badge>
         </ion-item>
       </ion-card-header>
     </ion-card>

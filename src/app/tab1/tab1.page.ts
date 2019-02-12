@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NavController, ActionSheetController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -19,8 +19,7 @@ export class Tab1Page implements OnInit {
   constructor(
     private af: AngularFirestore,
     private nav: NavController,
-    private storage: Storage,
-    private actionSheet: ActionSheetController) {
+    private storage: Storage) {
   }
 
   async ngOnInit() {
@@ -110,41 +109,5 @@ export class Tab1Page implements OnInit {
 
       return false;
     });
-  }
-
-  async showOptions(music) {
-    let type = music.anthem === 'Sim' ? 'Hino' : 'Música';
-    let buttons = [];
-
-    if (music.link && music.link.includes('spotify')) {
-      buttons.push({
-        text: `Abrir no Spotify`,
-        handler: () => {
-          window.open(music.link);
-        }
-      });
-    }
-
-    if (music.link && music.link.includes('youtube')) {
-      buttons.push({
-        text: `Abrir no Youtube`,
-        handler: () => {
-          window.open(music.link);
-        }
-      });
-    }
-
-    buttons.push({
-      text: `Detalhar/Alterar ${type}`,
-      handler: () => {
-        this.editMusic(music);
-      }
-    });
-
-    const actionSheet = await this.actionSheet.create({
-      header: 'Ações',
-      buttons: buttons
-    });
-    await actionSheet.present();
   }
 }
