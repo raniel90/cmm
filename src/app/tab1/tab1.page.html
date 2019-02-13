@@ -91,7 +91,7 @@
 
   <div style="margin-top:1vh">
     <ion-item-group *ngFor="let theme of themes">
-      <ion-item-divider *ngIf="theme.musics.length" class="theme-name">
+      <ion-item-divider *ngIf="theme.musics.length && selectedTheme === 'all'" class="theme-name">
         <ion-label><b>{{ theme.name }}</b></ion-label>
       </ion-item-divider>
 
@@ -110,7 +110,7 @@
             </ion-col>
           </ion-row>
           <ion-note slot="end" style="margin-top:0.5vh">
-            <ion-badge *ngIf="(music.anthem === 'Sim')" color="tertiary">Hino</ion-badge>
+            <ion-badge *ngIf="(music.anthem === 'Sim' && selectedSegment === 'all')" color="tertiary">Hino</ion-badge>
           </ion-note>
         </ion-item>
       </ion-grid>
