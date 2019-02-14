@@ -182,7 +182,7 @@ export class Tab1Page implements OnInit {
       buttons.push({
         text: `Abrir site da cifra`,
         handler: () => {
-          window.open(music.link);
+          window.open(music.sheetMusic);
         }
       });
     }
