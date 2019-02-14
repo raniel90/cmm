@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-music',
@@ -13,6 +14,7 @@ import { LoadingController } from '@ionic/angular';
 export class MusicComponent implements OnInit {
   musicForm: FormGroup;
   loading: any;
+  themes;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,7 +22,8 @@ export class MusicComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private nav: NavController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private themeService: ThemeService
   ) {
   }
 
@@ -34,8 +37,11 @@ export class MusicComponent implements OnInit {
       anthem: [null],
       theme: [null],
       tone: [null],
-      reference: [null]
+      reference: [null],
+      sheetMusic: [null],
     });
+
+    
   }
 
   goBack() {
@@ -43,6 +49,7 @@ export class MusicComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.themes = this.themeService.getThemes();
     this.initForm();
     this.mount();
   }
@@ -68,6 +75,7 @@ export class MusicComponent implements OnInit {
           theme: [music.theme],
           tone: [music.tone],
           reference: [music.reference],
+          sheetMusic: [music.sheetMusic],
         })
       }
     });
@@ -85,6 +93,7 @@ export class MusicComponent implements OnInit {
       theme: this.musicForm.value.theme,
       tone: this.musicForm.value.tone,
       reference: this.musicForm.value.reference,
+      sheetMusic: this.musicForm.value.sheetMusic
     };
 
     await this.presentLoading();

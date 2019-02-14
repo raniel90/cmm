@@ -41,10 +41,17 @@ export class WorshipPage implements OnInit {
   }
 
   async ionViewDidEnter() {
+    let musicsArray = [];
     let musics = await this.storage.get('musics');
 
     if (musics) {
-      this.worshipForm.value.musics = JSON.parse(musics) || [];
+      musics = JSON.parse(musics);
+
+      Object.keys(musics).forEach((key) => {
+        musicsArray.push(musics[key]);
+      });
+
+      this.worshipForm.value.musics = musicsArray || [];
     }
   }
 

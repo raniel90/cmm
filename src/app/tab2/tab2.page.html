@@ -14,23 +14,28 @@
 
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
-      refreshingText="Atualizando cultos...">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar"
+      refreshingSpinner="circles" refreshingText="Atualizando cultos...">
     </ion-refresher-content>
   </ion-refresher>
 
-  <br>
-
-  <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let worship of worships">
-    <ion-card no-padding style="background-color: #f4f5f8" (click)="editWorship(worship)">
-      <ion-card-header>
-        <ion-card-subtitle>{{ worship.date | date:'dd/MM/y' }}</ion-card-subtitle>
-        <ion-card-title style="text-transform: capitalize">{{ worship.band }}</ion-card-title>
-        <ion-item no-padding lines="none" color="light">
-          <ion-badge *ngIf="(worship.shift === 'Matutino')" slot="start" color="secondary">Matutino</ion-badge>
-          <ion-badge *ngIf="(worship.shift === 'Noturno')" slot="start" color="tertiary">Noturno</ion-badge>
-        </ion-item>
-      </ion-card-header>
-    </ion-card>
-  </ion-list>
+  <ion-grid (click)="editWorship(worship)" no-padding *ngFor="let worship of worships">
+    <ion-item no-padding lines="none" class="worship-date">
+      <ion-row no-padding>
+        <ion-col>
+          <ion-label style="margin-left: 2vh">{{ worship.date | date:'dd/MM/y' }}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item no-padding class="worship-band">
+      <ion-row no-padding>
+        <ion-col>
+          <ion-label style="margin-left: 2vh">{{ worship.band }}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-note slot="end" style="margin-top:0.5vh">
+        <ion-badge color="tertiary">{{ worship.shift }}</ion-badge>
+      </ion-note>
+    </ion-item>
+  </ion-grid>
 </ion-content>
