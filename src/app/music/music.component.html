@@ -109,7 +109,7 @@
             Tema da Música/Hino
           </ion-label>
           <ion-select multiple="true" placeholder="Selecione" formControlName="theme" required>
-            <ion-select-option *ngFor="let theme of themes" value="theme">{{ theme }}</ion-select-option>
+            <ion-select-option *ngFor="let theme of themes" value="{{ theme }}">{{ theme }}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>

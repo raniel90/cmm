@@ -43,7 +43,7 @@
   <ion-row style="margin-left:-1vh;margin-right:0.5vh">
     <ion-col>
       <ion-select placeholder="Filtrar por temas" [(ngModel)]="selectedTheme" (ionChange)="filterData()">
-        <ion-select-option *ngFor="let theme of filter.themes" value="theme">{{ theme }}</ion-select-option>
+        <ion-select-option *ngFor="let theme of filter.themes" value="{{ theme }}">{{ theme }}</ion-select-option>
       </ion-select>
     </ion-col>
   </ion-row>
