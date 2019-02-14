@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController, ActionSheetController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as _ from 'lodash';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-tab1',
@@ -13,7 +14,8 @@ export class Tab1Page implements OnInit {
   public themes: any;
   public themesTemp: any;
   public filter = {
-    name: ''
+    name: '',
+    themes: []
   };
   public selectedSegment = 'all';
   public selectedTheme = 'all';
@@ -22,10 +24,12 @@ export class Tab1Page implements OnInit {
     private af: AngularFirestore,
     private nav: NavController,
     private storage: Storage,
-    private actionSheet: ActionSheetController) {
+    private actionSheet: ActionSheetController,
+    private themeService: ThemeService) {
   }
 
   async ngOnInit() {
+    this.filter.themes = this.themeService.getThemes();
     this.list();
   }
 
@@ -168,6 +172,15 @@ export class Tab1Page implements OnInit {
     if (music.link && music.link.includes('youtube')) {
       buttons.push({
         text: `Abrir no Youtube`,
+        handler: () => {
+          window.open(music.link);
+        }
+      });
+    }
+
+    if (music.sheetMusic) {
+      buttons.push({
+        text: `Abrir site da cifra`,
         handler: () => {
           window.open(music.link);
         }

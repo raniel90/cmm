@@ -96,50 +96,20 @@
       <ion-col style="margin-left:-1vh">
         <ion-item>
           <ion-label position="stacked" color="primary">
+            Link da Cifra
+          </ion-label>
+          <ion-input formControlName="sheetMusic" placeholder="Digite o link da cifra"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row padding>
+      <ion-col style="margin-left:-1vh">
+        <ion-item>
+          <ion-label position="stacked" color="primary">
             Tema da Música/Hino
           </ion-label>
           <ion-select multiple="true" placeholder="Selecione" formControlName="theme" required>
-            <ion-select-option value="Advento">Advento</ion-select-option>
-            <ion-select-option value="Amor fraternal">Amor fraternal</ion-select-option>
-            <ion-select-option value="Ano Novo">Ano Novo</ion-select-option>
-            <ion-select-option value="Apelo">Apelo</ion-select-option>
-            <ion-select-option value="Arrependimento">Arrependimento</ion-select-option>
-            <ion-select-option value="Ascensão">Ascensão</ion-select-option>
-            <ion-select-option value="Batismo">Batismo</ion-select-option>
-            <ion-select-option value="Casamento">Casamento</ion-select-option>
-            <ion-select-option value="Confiança">Confiança</ion-select-option>
-            <ion-select-option value="Consagração">Consagração</ion-select-option>
-            <ion-select-option value="Consolação">Consolação</ion-select-option>
-            <ion-select-option value="Conversão">Conversão</ion-select-option>
-            <ion-select-option value="Culto e Adoração">Culto e Adoração</ion-select-option>
-            <ion-select-option value="Dedicação de Templo">Dedicação de Templo</ion-select-option>
-            <ion-select-option value="Despedida">Despedida</ion-select-option>
-            <ion-select-option value="Entrada Triunfal">Entrada Triunfal</ion-select-option>
-            <ion-select-option value="Epifania">Epifania</ion-select-option>
-            <ion-select-option value="Escola Dominical">Escola Dominical</ion-select-option>
-            <ion-select-option value="Esperança">Esperança</ion-select-option>
-            <ion-select-option value="Evangelização">Evangelização</ion-select-option>
-            <ion-select-option value="Família">Família</ion-select-option>
-            <ion-select-option value="Fim do Culto">Fim do Culto</ion-select-option>
-            <ion-select-option value="Louvor">Louvor</ion-select-option>
-            <ion-select-option value="Natal">Natal</ion-select-option>
-            <ion-select-option value="Oração">Oração</ion-select-option>
-            <ion-select-option value="Oração Vespertina">Oração Vespertina</ion-select-option>
-            <ion-select-option value="Palavra de Deus">Palavra de Deus</ion-select-option>
-            <ion-select-option value="Pentecostes">Pentecostes</ion-select-option>
-            <ion-select-option value="Perdão">Perdão</ion-select-option>
-            <ion-select-option value="Perseverança">Perseverança</ion-select-option>
-            <ion-select-option value="Pátria">Pátria</ion-select-option>
-            <ion-select-option value="Reforma">Reforma</ion-select-option>
-            <ion-select-option value="Regozijo">Regozijo</ion-select-option>
-            <ion-select-option value="Reino de Deus">Reino de Deus</ion-select-option>
-            <ion-select-option value="Ressurreição">Ressurreição</ion-select-option>
-            <ion-select-option value="Santa Ceia">Santa Ceia</ion-select-option>
-            <ion-select-option value="Santificação">Santificação</ion-select-option>
-            <ion-select-option value="Segunda Vinda">Segunda Vinda</ion-select-option>
-            <ion-select-option value="Serviços Fúnebres">Serviços Fúnebres</ion-select-option>
-            <ion-select-option value="Trindade">Trindade</ion-select-option>
-            <ion-select-option value="Vocação Pastoral">Vocação Pastoral</ion-select-option>
+            <ion-select-option *ngFor="let theme of themes" value="theme">{{ theme }}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
