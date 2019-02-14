@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController, ActionSheetController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import * as _ from 'lodash';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-tab1',
@@ -9,21 +11,25 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page implements OnInit {
-  public musics: any;
-  public musicsTemp: any;
+  public themes: any;
+  public themesTemp: any;
   public filter = {
-    name: ''
+    name: '',
+    themes: []
   };
   public selectedSegment = 'all';
+  public selectedTheme = 'all';
 
   constructor(
     private af: AngularFirestore,
     private nav: NavController,
     private storage: Storage,
-    private actionSheet: ActionSheetController) {
+    private actionSheet: ActionSheetController,
+    private themeService: ThemeService) {
   }
 
   async ngOnInit() {
+    this.filter.themes = this.themeService.getThemes();
     this.list();
   }
 
@@ -54,11 +60,43 @@ export class Tab1Page implements OnInit {
   }
 
   async list() {
-    this.musics = await this.getValueFromObservable(
+    let themesObj = {}
+    let themesArray = [];
+    let musicsArray: any = await this.getValueFromObservable(
       this.af.collection('musics', ref =>
         ref.orderBy('name', 'asc')).valueChanges()
     );
-    this.musicsTemp = this.musics;
+
+    musicsArray.forEach((music) => {
+      if (music.theme && music.theme.length) {
+        music.theme.forEach((item) => {
+          if (!themesObj[item]) {
+            themesObj[item] = {
+              musics: {}
+            };
+          }
+
+          themesObj[item].musics[music.id] = music;
+        });
+      }
+    });
+
+    Object.keys(themesObj).forEach((themeKey) => {
+      let musics = [];
+      const theme = themesObj[themeKey];
+
+      Object.keys(theme.musics).forEach((musicKey) => {
+        musics.push(theme.musics[musicKey]);
+      });
+
+      themesArray.push({
+        name: themeKey,
+        musics: _.orderBy(musics, ['name'], ['asc'])
+      });
+    });
+
+    this.themes = _.orderBy(themesArray, ['name'], ['asc']);
+    this.themesTemp = this.themes;
   }
 
   async listByFilter() {
@@ -66,7 +104,7 @@ export class Tab1Page implements OnInit {
       anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
     };
 
-    this.musics = await this.getValueFromObservable(
+    this.themes = await this.getValueFromObservable(
       this.af.collection('musics', ref => ref
         .where('anthem', '==', filter.anthem)
         .orderBy('name', 'asc')).valueChanges()
@@ -93,22 +131,28 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  async filterByCategory($event) {
-    this.musics = this.musicsTemp.filter((music) => {
-      this.selectedSegment = $event.detail.value;
-      if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
-        return true;
-      }
+  filterData() {
+    this.themes = this.themesTemp.map((theme) => {
+      const musics = theme.musics.filter((music) => {
+        if (this.selectedSegment === 'anthem' && music.anthem === "Não") {
+          return false;
+        }
 
-      if (this.selectedSegment === 'song' && music.anthem === "Não") {
-        return true;
-      }
+        if (this.selectedSegment === 'song' && music.anthem === "Sim") {
+          return false;
+        }
 
-      if (this.selectedSegment === 'all') {
-        return true;
-      }
+        if (this.selectedTheme !== 'all' && theme.name !== this.selectedTheme) {
+          return false;
+        }
 
-      return false;
+        return true;
+      });
+
+      return {
+        name: theme.name,
+        musics: musics
+      };
     });
   }
 
@@ -134,6 +178,15 @@ export class Tab1Page implements OnInit {
       });
     }
 
+    if (music.sheetMusic) {
+      buttons.push({
+        text: `Abrir site da cifra`,
+        handler: () => {
+          window.open(music.sheetMusic);
+        }
+      });
+    }
+
     buttons.push({
       text: `Detalhar/Alterar ${type}`,
       handler: () => {
@@ -142,7 +195,7 @@ export class Tab1Page implements OnInit {
     });
 
     const actionSheet = await this.actionSheet.create({
-      header: 'Ações',
+      header: `${music.artist} - ${music.name}`,
       buttons: buttons
     });
     await actionSheet.present();

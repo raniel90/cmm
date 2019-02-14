@@ -22,7 +22,12 @@ export class WorshipFilterPage implements OnInit {
     private navController: NavController,
     private alertController: AlertController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let filterSaved = await this.storage.get('worshipFilter');
+
+    if (filterSaved) {
+      this.filter = JSON.parse(filterSaved);
+    }
   }
 
   async filterWorship() {
@@ -42,6 +47,15 @@ export class WorshipFilterPage implements OnInit {
     }
 
     this.storage.set('worshipFilter', JSON.stringify(this.filter));
+    this.redirect();
+  }
+
+  clearFilter() {
+    this.storage.remove('worshipFilter');
+    this.redirect();
+  }
+
+  redirect() {
     this.storage.set('goToTab2', 'true');
     this.navController.navigateBack(['/tabs']);
   }

@@ -28,12 +28,10 @@ export class Tab2Page implements OnInit {
   }
 
   async ionViewWillEnter() {
-
     let worshipFilter = await this.storage.get('worshipFilter');
 
     if (worshipFilter) {
       this.worshipFilter = JSON.parse(worshipFilter);
-      this.storage.remove('worshipFilter');
       this.worships = [];
       this.applyFilter();
     } else {
