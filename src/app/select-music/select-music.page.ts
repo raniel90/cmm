@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ActionSheetController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as _ from 'lodash';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-select-music',
@@ -9,59 +11,112 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./select-music.page.scss'],
 })
 export class SelectMusicPage implements OnInit {
-  public musicsTemp;
-  public musics;
+  public themes: any;
+  public musicsSelected = {};
+  public themesTemp: any;
   public filter = {
-    name: ''
+    name: '',
+    themes: []
   };
   public selectedSegment = 'all';
-  public isEdit = false;
+  public selectedTheme = 'all';
+  objectKeys = Object.keys;
 
   constructor(
-    private navController: NavController,
+    private af: AngularFirestore,
+    private nav: NavController,
     private storage: Storage,
-    private af: AngularFirestore) { }
-
-  async ngOnInit() {
-    await this.list();
-    await this.setSelectedMusics();
+    private actionSheet: ActionSheetController,
+    private themeService: ThemeService,
+    private navController: NavController) {
   }
 
-  async setSelectedMusics() {
-    let musicsSavedById = {};
-    let musicsSaved = await this.storage.get('musics');
+  async ngOnInit() {
+    this.filter.themes = this.themeService.getThemes();
+    this.list();
+  }
 
+  /**
+   * Workaround for tabs
+   */
+  async redirectAfterAction() {
+    const goToTab2 = await this.storage.get('goToTab2');
 
-    if (musicsSaved) {
-      musicsSaved = JSON.parse(musicsSaved);
-
-      if (musicsSaved.length) {
-        this.selectedSegment = 'saved';
-        this.isEdit = true;
-
-        musicsSaved.forEach((musicSaved) => {
-          musicsSavedById[musicSaved.id] = musicSaved;
-        });
-      }
+    if (goToTab2 === 'true') {
+      await this.storage.set('goToTab1', 'true');
+      await this.storage.remove('goToTab2');
+      this.nav.navigateRoot(['/tabs/tab2']);
     }
+  }
 
-    this.musics = this.musics.map((music) => {
-      music.selected = false;
-      music.hidden = false;
+  async ionViewDidEnter() {
+    await this.redirectAfterAction();
+    this.list();
+  }
 
-      if (musicsSavedById[music.id]) {
-        music.selected = true;
-      }
+  addMusic() {
+    this.nav.navigateForward(['/music']);
+  }
 
-      return music;
-    });
+  editMusic(music) {
+    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music) } });
   }
 
   async list() {
-    this.musics = await this.getValueFromObservable(
-      this.af.collection('musics', ref => ref.orderBy('name', 'asc')).valueChanges()
+    let themesObj = {}
+    let themesArray = [];
+    let musicsSavedObj = {};
+    let musicsSaved = await this.storage.get('musics');
+    let musicsArray: any = await this.getValueFromObservable(
+      this.af.collection('musics', ref =>
+        ref.orderBy('name', 'asc')).valueChanges()
     );
-    this.musicsTemp = this.musics;
+
+    musicsSaved = JSON.parse(musicsSaved);
+    musicsSaved.forEach((musicSaved) => {
+      musicsSavedObj[musicSaved.id] = musicSaved;
+    });
+
+    musicsArray.forEach((music) => {
+      if (music.theme && music.theme.length) {
+        music.theme.forEach((item) => {
+          if (!themesObj[item]) {
+            themesObj[item] = {
+              musics: {}
+            };
+          }
+
+          if (musicsSavedObj[music.id] && item === musicsSavedObj[music.id].theme_name) {
+            music.selected = true;
+            music.theme_name = item;
+            this.musicsSelected[music.id] = music;
+          }
+
+          themesObj[item].musics[music.id] = music;
+        });
+      }
+    });
+
+    Object.keys(themesObj).forEach((themeKey) => {
+      let musics = [];
+      const theme = themesObj[themeKey];
+
+      Object.keys(theme.musics).forEach((musicKey) => {
+        musics.push(theme.musics[musicKey]);
+      });
+
+      themesArray.push({
+        name: themeKey,
+        musics: _.orderBy(musics, ['name'], ['asc'])
+      });
+    });
+
+    this.themes = _.orderBy(themesArray, ['name'], ['asc']);
+    this.themesTemp = this.themes;
+
+    if (Object.keys(this.musicsSelected).length) {
+      this.selectedSegment = 'saved';
+    }
   }
 
   async listByFilter() {
@@ -69,25 +124,11 @@ export class SelectMusicPage implements OnInit {
       anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
     };
 
-    this.musics = await this.getValueFromObservable(
+    this.themes = await this.getValueFromObservable(
       this.af.collection('musics', ref => ref
         .where('anthem', '==', filter.anthem)
         .orderBy('name', 'asc')).valueChanges()
     );
-  }
-
-  selectMusic(music, index) {
-    this.musics[index].selected = !music.selected;
-
-    if (this.selectedSegment === 'saved') {
-      this.filterMusicsBySegment();
-    }
-  }
-
-  goBack() {
-    let musicsSelected = this.musics.filter((music => music.selected));
-    this.storage.set('musics', JSON.stringify(musicsSelected));
-    this.navController.navigateBack(['/worship']);
   }
 
   async doRefresh(event) {
@@ -110,31 +151,100 @@ export class SelectMusicPage implements OnInit {
     });
   }
 
-  async filterByCategory($event) {
-    this.selectedSegment = $event.detail.value;
-    this.filterMusicsBySegment();
-  }
+  filterData() {
+    this.themes = this.themesTemp.map((theme) => {
+      const musics = theme.musics.filter((music) => {
+        if (this.selectedSegment === 'anthem' && music.anthem === "Não") {
+          return false;
+        }
 
-  filterMusicsBySegment() {
-    this.musics = this.musicsTemp.filter((music) => {
-      if (this.selectedSegment === 'anthem' && music.anthem === "Sim") {
+        if (this.selectedSegment === 'song' && music.anthem === "Sim") {
+          return false;
+        }
+
+        if (this.selectedTheme !== 'all' && theme.name !== this.selectedTheme) {
+          return false;
+        }
+
         return true;
-      }
+      });
 
-      if (this.selectedSegment === 'song' && music.anthem === "Não") {
-        return true;
-      }
-
-      if (this.selectedSegment === 'all') {
-        return true;
-      }
-
-      if (this.selectedSegment === 'saved' && music.selected) {
-        return true;
-      }
-
-      return false;
+      return {
+        name: theme.name,
+        musics: musics
+      };
     });
   }
 
+  selectMusic(musicSelected, indexTheme, indexMusic) {
+    let music;
+
+    if (musicSelected.selected) {
+      this.removeMusic(musicSelected);
+      return;
+    }
+
+    music = this.themes[indexTheme].musics[indexMusic];
+
+    music.theme_name = this.themes[indexTheme].name;
+    this.themes[indexTheme].musics[indexMusic].selected = true;
+    this.musicsSelected[music.id] = music;
+  }
+
+  removeMusic(music) {
+    const indexTheme = this.themes.map((theme) => theme.name).indexOf(music.theme_name);
+    const indexMusic = this.themes[indexTheme].musics.map((music) => music.id).indexOf(music.id);
+
+    this.themes[indexTheme].musics[indexMusic].selected = false;
+    delete this.musicsSelected[music.id];
+  }
+
+  async showOptions(music, indexTheme, indexMusic) {
+    let buttons = [];
+
+    if (music.link && music.link.includes('spotify')) {
+      buttons.push({
+        text: `Abrir no Spotify`,
+        handler: () => {
+          window.open(music.link);
+        }
+      });
+    }
+
+    if (music.link && music.link.includes('youtube')) {
+      buttons.push({
+        text: `Abrir no Youtube`,
+        handler: () => {
+          window.open(music.link);
+        }
+      });
+    }
+
+    if (music.sheetMusic) {
+      buttons.push({
+        text: `Abrir site da cifra`,
+        handler: () => {
+          window.open(music.link);
+        }
+      });
+    }
+
+    buttons.push({
+      text: music.selected ? 'Remover do repertório' : 'Adicionar ao repertório',
+      handler: () => {
+        this.selectMusic(music, indexTheme, indexMusic);
+      }
+    });
+
+    const actionSheet = await this.actionSheet.create({
+      header: `${music.artist} - ${music.name}`,
+      buttons: buttons
+    });
+    await actionSheet.present();
+  }
+
+  goBack() {
+    this.storage.set('musics', JSON.stringify(this.musicsSelected));
+    this.navController.navigateBack(['/worship']);
+  }
 }

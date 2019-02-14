@@ -10,11 +10,11 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" cancelButtonText="Cancelar"
-    animated [(ngModel)]="filter.name"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar músicas/artistas" debounce="500" cancelButtonText="Cancelar" animated
+    [(ngModel)]="filter.name"></ion-searchbar>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar" refreshingSpinner="circles"
-      refreshingText="Atualizando músicas...">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar"
+      refreshingSpinner="circles" refreshingText="Atualizando músicas...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -26,13 +26,13 @@
 
   <ion-row style="margin-left:1vh;margin-right:1vh">
     <ion-col>
-      <ion-segment (ionChange)="filterByCategory($event)" [(ngModel)]="selectedSegment">
+      <ion-segment (ionChange)="filterData()" [(ngModel)]="selectedSegment">
         <ion-segment-button value="all">
           <ion-label>Todos</ion-label>
         </ion-segment-button>
-        <ion-segment-button *ngIf="isEdit" value="saved">
-            <ion-label>Salvos</ion-label>
-          </ion-segment-button>
+        <ion-segment-button value="saved">
+          <ion-label>Salvos</ion-label>
+        </ion-segment-button>
         <ion-segment-button value="song">
           <ion-label>Louvores</ion-label>
         </ion-segment-button>
@@ -43,18 +43,75 @@
     </ion-col>
   </ion-row>
 
-  <ion-list style="margin-bottom:-0.5vh" no-padding *ngFor="let music of musics | filterName:filter; let i = index"
-    [attr.data-index]="i">
-    <ion-card no-padding style="background-color: #f4f5f8" (click)="selectMusic(music, i)" *ngIf="!music.hidden">
-      <ion-card-header>
-        <ion-card-subtitle>{{ music.artist }} </ion-card-subtitle>
-        <ion-card-title style="text-transform: capitalize">{{ music.name }}</ion-card-title>
-        <ion-item no-padding lines="none" color="light">
-          <ion-badge *ngIf="(music.anthem === 'Sim')" slot="start" color="secondary">Hino</ion-badge>
-          <ion-button class="button-over-card" *ngIf="!music.selected" color="primary" fill="outline" slot="end">Adicionar</ion-button>
-          <ion-button class="button-over-card" *ngIf="music.selected" color="danger" fill="outline" slot="end">Remover</ion-button>
+  <ion-row style="margin-left:-1vh;margin-right:0.5vh" *ngIf="selectedSegment !== 'saved'">
+    <ion-col>
+      <ion-select placeholder="Filtrar por temas" [(ngModel)]="selectedTheme" (ionChange)="filterData()">
+        <ion-select-option *ngFor="let theme of filter.themes" value="{{ theme }}">{{ theme }}</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
+  <div style="margin-top:1vh" *ngIf="selectedSegment !== 'saved'">
+    <ion-item-group *ngFor="let theme of themes; let indexTheme = index">
+      <ion-item-divider *ngIf="theme.musics.length && selectedTheme === 'all'" class="theme-name">
+        <ion-label><b>{{ theme.name }}</b></ion-label>
+      </ion-item-divider>
+
+      <ion-grid (click)="showOptions(music, indexTheme, indexMusic)" no-padding
+        *ngFor="let music of theme.musics | filterNameDefault:filter; let indexMusic = index">
+        <ion-item no-padding lines="none">
+          <ion-row no-padding class="music-artist">
+            <ion-col>
+              <ion-label style="margin-left: 2vh">{{ music.artist }}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-note slot="end">
+            <ion-badge *ngIf="(musicsSelected[music.id] && musicsSelected[music.id].theme_name === theme.name)"
+              color="success">Salvo</ion-badge>
+          </ion-note>
         </ion-item>
-      </ion-card-header>
-    </ion-card>
-  </ion-list>
+        <ion-item no-padding>
+          <ion-row no-padding>
+            <ion-col class="music-name">
+              <ion-label style="margin-left: 2vh">{{ music.name }}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-note slot="end">
+            <ion-badge *ngIf="(music.anthem === 'Sim' && selectedSegment === 'all')" color="tertiary">Hino</ion-badge>
+          </ion-note>
+        </ion-item>
+      </ion-grid>
+    </ion-item-group>
+  </div>
+
+  <div style="margin-top:1vh" *ngIf="selectedSegment === 'saved'">
+    <ion-grid (click)="showOptions(musicsSelected[key])" no-padding
+      *ngFor="let key of objectKeys(musicsSelected);">
+      <ion-item no-padding lines="none" class="music-artist">
+        <ion-row no-padding>
+          <ion-col>
+            <ion-label style="margin-left: 2vh">{{ musicsSelected[key].artist }}</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <ion-item no-padding lines="none" class="music-name">
+        <ion-row no-padding>
+          <ion-col>
+            <ion-label style="margin-left: 2vh">{{ musicsSelected[key].name }}</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <ion-item no-padding>
+        <ion-row no-padding style="margin-left: 2vh">
+          <ion-col>
+            <ion-badge *ngIf="(musicsSelected[key] && musicsSelected[key].theme_name)" color="secondary">
+              {{ musicsSelected[key].theme_name }}</ion-badge>
+          </ion-col>
+        </ion-row>
+        <ion-col>
+          <ion-badge *ngIf="(musicsSelected[key].anthem === 'Sim')" color="tertiary">Hino</ion-badge>
+        </ion-col>
+      </ion-item>
+    </ion-grid>
+  </div>
 </ion-content>
