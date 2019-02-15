@@ -207,20 +207,29 @@ export class SelectMusicPage implements OnInit {
     let buttons = [];
     let type = music.anthem === 'Sim' ? 'Hino' : 'Música';
 
-    if (music.link && music.link.includes('spotify')) {
+    if (music.link) {
       buttons.push({
-        text: `Abrir no Spotify`,
+        text: `Abrir no Youtube`,
         handler: () => {
           window.open(music.link);
         }
       });
     }
 
-    if (music.link && music.link.includes('youtube')) {
+    if (music.linkSpotify) {
       buttons.push({
-        text: `Abrir no Youtube`,
+        text: `Abrir no Spotify`,
         handler: () => {
-          window.open(music.link);
+          window.open(music.linkSpotify);
+        }
+      });
+    }
+
+    if (music.linkDeezer) {
+      buttons.push({
+        text: `Abrir no Deezer`,
+        handler: () => {
+          window.open(music.linkDeezer);
         }
       });
     }
