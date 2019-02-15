@@ -34,6 +34,8 @@ export class MusicComponent implements OnInit {
       name: [null],
       beginMusic: [null],
       link: [null],
+      linkSpotify: [null],
+      linkDeezer: [null],
       artist: [null],
       anthem: [null],
       theme: [null],
@@ -46,7 +48,11 @@ export class MusicComponent implements OnInit {
   }
 
   goBack() {
-    this.nav.navigateRoot(['/tabs']);
+    if (this.isEdit) {
+      this.nav.navigateRoot(['/tabs']);
+    } else {
+      this.nav.navigateBack(['/select-music']);
+    }
   }
 
   async ngOnInit() {
@@ -72,6 +78,8 @@ export class MusicComponent implements OnInit {
           name: [music.name],
           beginMusic: [music.beginMusic],
           link: [music.link],
+          linkSpotify: [music.linkSpotify],
+          linkDeezer: [music.linkDeezer],
           artist: [music.artist],
           anthem: [music.anthem],
           theme: [music.theme],
@@ -90,6 +98,8 @@ export class MusicComponent implements OnInit {
       name: this.musicForm.value.name,
       beginMusic: this.musicForm.value.beginMusic,
       link: this.musicForm.value.link,
+      linkSpotify: this.musicForm.value.linkSpotify,
+      linkDeezer: this.musicForm.value.linkDeezer,
       artist: this.musicForm.value.artist,
       anthem: this.musicForm.value.anthem,
       theme: this.musicForm.value.theme,
