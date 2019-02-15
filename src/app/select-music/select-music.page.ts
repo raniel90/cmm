@@ -199,8 +199,13 @@ export class SelectMusicPage implements OnInit {
     delete this.musicsSelected[music.id];
   }
 
+  viewMusic(music) {
+    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music), is_edit: false } });
+  }
+
   async showOptions(music, indexTheme, indexMusic) {
     let buttons = [];
+    let type = music.anthem === 'Sim' ? 'Hino' : 'Música';
 
     if (music.link && music.link.includes('spotify')) {
       buttons.push({
@@ -228,6 +233,13 @@ export class SelectMusicPage implements OnInit {
         }
       });
     }
+
+    buttons.push({
+      text: `Detalhar ${type}`,
+      handler: () => {
+        this.viewMusic(music);
+      }
+    });
 
     buttons.push({
       text: music.selected ? 'Remover do repertório' : 'Adicionar ao repertório',

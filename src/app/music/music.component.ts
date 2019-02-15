@@ -15,6 +15,7 @@ export class MusicComponent implements OnInit {
   musicForm: FormGroup;
   loading: any;
   themes;
+  isEdit = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -62,6 +63,7 @@ export class MusicComponent implements OnInit {
         return;
       }
 
+      this.isEdit = params.is_edit === "true" ? true : false;
       music = JSON.parse(params.music);
 
       if (music) {

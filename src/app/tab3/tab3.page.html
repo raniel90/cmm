@@ -1,9 +1,44 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Relatórios
-    </ion-title>
+    <ion-title>Relatórios</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Puxe para baixo para atualizar"
+      refreshingSpinner="circles" refreshingText="Atualizando relatórios...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-row style="margin-left:-1vh;margin-right:0.5vh">
+    <ion-col>
+      <ion-select (ionChange)="showReport()" placeholder="Selecione um relatório" [(ngModel)]="reportName">
+        <ion-select-option value="more_played">Músicas mais tocadas</ion-select-option>
+        <ion-select-option value="less_played">Músicas menos tocadas</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
+  <div *ngIf="reportName">
+    <ion-grid (click)="showOptions(music)" no-padding *ngFor="let music of musics">
+      <ion-item no-padding lines="none" class="music-artist">
+        <ion-row no-padding>
+          <ion-col>
+            <ion-label style="margin-left: 2vh">{{ music.artist }}</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <ion-item no-padding class="music-name">
+        <ion-row no-padding>
+          <ion-col>
+            <ion-label style="margin-left: 2vh">{{ music.name }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-note slot="end" style="margin-top:0.5vh">
+          <ion-badge color="tertiary">{{ music.count }}</ion-badge>
+        </ion-note>
+      </ion-item>
+    </ion-grid>
+  </div>
+</ion-content>

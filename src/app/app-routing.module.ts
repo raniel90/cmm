@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'worship', loadChildren: './worship/worship.module#WorshipPageModule' },
   { path: 'select-music', loadChildren: './select-music/select-music.module#SelectMusicPageModule' },
   { path: 'worship-filter', loadChildren: './worship-filter/worship-filter.module#WorshipFilterPageModule' },
+  { path: 'history-played', loadChildren: './history-played/history-played.module#HistoryPlayedPageModule' },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
