@@ -24,6 +24,8 @@ export class Tab2Page implements OnInit {
   }
 
   async ngOnInit() {
+    this.worshipFilter = null;
+    await this.storage.remove('worshipFilter');
     this.list();
   }
 

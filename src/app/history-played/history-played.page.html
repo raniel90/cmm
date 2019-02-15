@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Histórico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-item-group>
+    <ion-item-divider class="theme-name">
+      <ion-label><b>{{ music.name }}</b></ion-label>
+    </ion-item-divider>
+  </ion-item-group>
+
+  <ion-grid no-padding *ngFor="let worship of worships">
+    <ion-item no-padding lines="none" class="worship-date">
+      <ion-row no-padding>
+        <ion-col>
+          <ion-label style="margin-left: 2vh">{{ worship.date | date:'dd/MM/y' }}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item no-padding class="worship-band">
+      <ion-row no-padding>
+        <ion-col>
+          <ion-label style="margin-left: 2vh">{{ worship.band }}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-note slot="end" style="margin-top:0.5vh">
+        <ion-badge color="tertiary">{{ worship.shift }}</ion-badge>
+      </ion-note>
+    </ion-item>
+  </ion-grid>
+</ion-content>
