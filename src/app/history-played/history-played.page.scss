@@ -1,15 +1,20 @@
-.music-artist {
+.theme-name {
+    background-color: #f4f5f8;
+    color: #000;
+  }
+
+  .worship-date {
     color: #666;
     font-size: 2vh;
     font-weight: 700;
     letter-spacing: .4px;
     text-transform: uppercase;
-}
-
-.music-name {
+  }
+  
+.worship-band {
     color: #000;
     font-size: 3vh;
     margin-top: -1.8vh;
     font-weight: normal;
     letter-spacing: .4px;
-}
+  }

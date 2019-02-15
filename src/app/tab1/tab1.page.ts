@@ -56,7 +56,7 @@ export class Tab1Page implements OnInit {
   }
 
   editMusic(music) {
-    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music) } });
+    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music), is_edit: true } });
   }
 
   async list() {
