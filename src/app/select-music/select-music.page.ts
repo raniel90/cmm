@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as _ from 'lodash';
 import { ThemeService } from '../theme.service';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-select-music',
@@ -28,7 +29,8 @@ export class SelectMusicPage implements OnInit {
     private storage: Storage,
     private actionSheet: ActionSheetController,
     private themeService: ThemeService,
-    private navController: NavController) {
+    private navController: NavController,
+    private utils: UtilsService) {
   }
 
   async ngOnInit() {
@@ -67,7 +69,7 @@ export class SelectMusicPage implements OnInit {
     let themesArray = [];
     let musicsSavedObj = {};
     let musicsSaved = await this.storage.get('musics');
-    let musicsArray: any = await this.getValueFromObservable(
+    let musicsArray: any = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref =>
         ref.orderBy('name', 'asc')).valueChanges()
     );
@@ -124,7 +126,7 @@ export class SelectMusicPage implements OnInit {
       anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
     };
 
-    this.themes = await this.getValueFromObservable(
+    this.themes = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref => ref
         .where('anthem', '==', filter.anthem)
         .orderBy('name', 'asc')).valueChanges()
@@ -141,14 +143,6 @@ export class SelectMusicPage implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
-  }
-
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
   }
 
   filterData() {
@@ -211,7 +205,7 @@ export class SelectMusicPage implements OnInit {
       buttons.push({
         text: `Abrir no Youtube`,
         handler: () => {
-          window.open(music.link);
+          this.utils.openUrl(music.link);
         }
       });
     }
@@ -220,7 +214,7 @@ export class SelectMusicPage implements OnInit {
       buttons.push({
         text: `Abrir no Spotify`,
         handler: () => {
-          window.open(music.linkSpotify);
+          this.utils.openUrl(music.linkSpotify);
         }
       });
     }
@@ -229,7 +223,7 @@ export class SelectMusicPage implements OnInit {
       buttons.push({
         text: `Abrir no Deezer`,
         handler: () => {
-          window.open(music.linkDeezer);
+          this.utils.openUrl(music.linkDeezer);
         }
       });
     }
@@ -238,7 +232,7 @@ export class SelectMusicPage implements OnInit {
       buttons.push({
         text: `Abrir site da cifra`,
         handler: () => {
-          window.open(music.sheetMusic);
+          this.utils.openUrl(music.sheetMusic);
         }
       });
     }
