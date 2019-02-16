@@ -84,21 +84,4 @@ export class Tab3Page {
     await this.storage.set('musicHistory', JSON.stringify(music));
     this.nav.navigateForward(['/history-played']);
   }
-
-  async showOptions(music) {
-    let buttons = [];
-
-    buttons.push({
-      text: `Ver histórico`,
-      handler: () => {
-        this.viewHistoryPlayed(music);
-      }
-    });
-
-    const actionSheet = await this.actionSheet.create({
-      header: `${music.artist} - ${music.name}`,
-      buttons: buttons
-    });
-    await actionSheet.present();
-  }
 }

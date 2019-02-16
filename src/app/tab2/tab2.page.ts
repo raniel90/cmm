@@ -117,7 +117,7 @@ export class Tab2Page implements OnInit {
         const header = `*Banda:* ${worship.band}\n*Culto:* ${worship.shift}\n\n`;
 
         worship.musics.forEach((worshipMusic) => {
-          musics += `Banda/Artista: ${worshipMusic.artist}\nNome da música: ${worshipMusic.name}\nInício da música: ${worshipMusic.beginMusic}\n\n`;
+          musics += `*Banda/Artista:* ${worshipMusic.artist}\n*Nome da música:* ${worshipMusic.name} (${worshipMusic.tone})\n*Início da música:* ${worshipMusic.beginMusic}\n\n`;
         });
 
         data = `${header}${musics}`;
