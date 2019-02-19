@@ -10,9 +10,6 @@
       <ion-button>
         <ion-icon name="musical-notes"></ion-icon>
       </ion-button>
-      <ion-button>
-        <ion-badge>{{ worshipForm && worshipForm.value.musics.length ? worshipForm.value.musics.length : 0 }}</ion-badge>
-      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -58,6 +55,42 @@
         </ion-item>
       </ion-col>
     </ion-row>
+
+    <ion-row style="margin-top:2vh">
+    </ion-row>
+
+    <ion-grid color="light" style="background-color: #f4f5f8">
+      <ion-row style="margin-left: 5vw" align-items-center>
+        <ion-col size="10">
+          <ion-label><b>Músicas</b></ion-label>
+        </ion-col>
+        <ion-col size="2">
+          <ion-badge color="tertiary">
+            {{ worshipForm && worshipForm.value.musics.length ? worshipForm.value.musics.length : 0 }}
+          </ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-list *ngIf="worshipForm && worshipForm.value.musics.length" padding style="margin-left: -1vh">
+      <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
+        <ion-item *ngFor="let music of worshipForm.value.musics; let i = index">
+          <ion-label>{{ i + 1 }}. {{ music.name }}</ion-label>
+          <ion-reorder></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+    </ion-list>
+
+    <div *ngIf="worshipForm && !worshipForm.value.musics.length">
+      <ion-row style="text-align: center;font-weight: 600">
+        <ion-col>
+          <ion-label>
+            Nenhuma música cadastrada.
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+
     <ion-row padding style="padding-bottom: 0">
       <ion-col>
         <ion-button [disabled]="worshipForm.invalid" (click)="saveWorship()" expand="full">Salvar</ion-button>

@@ -34,17 +34,6 @@ export class SelectMusicPage implements OnInit {
     private utils: UtilsService) {
   }
 
-  reorderItems(ev) {
-    let musicSelectedTemp: any[] = this.musicsSelectedArray;
-    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
-
-    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
-    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
-    this.musicsSelectedArray = musicSelectedTemp;
-
-    ev.detail.complete();
-  }
-
   async ngOnInit() {
     this.filter.themes = this.themeService.getThemes();
     this.list();
@@ -299,5 +288,16 @@ export class SelectMusicPage implements OnInit {
   goBack() {
     this.storage.set('musics', JSON.stringify(this.musicsSelectedArray));
     this.navController.navigateBack(['/worship']);
+  }
+
+  reorderItems(ev) {
+    let musicSelectedTemp: any[] = this.musicsSelectedArray;
+    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
+
+    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
+    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
+    this.musicsSelectedArray = musicSelectedTemp;
+
+    ev.detail.complete();
   }
 }

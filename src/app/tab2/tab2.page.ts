@@ -130,12 +130,12 @@ export class Tab2Page implements OnInit {
       }
     });
 
-    buttons.push({
-      text: `Detalhar/Alterar Culto`,
-      handler: () => {
-        this.editWorship(worship);
-      }
-    });
+    // buttons.push({
+    //   text: `Detalhar/Alterar Culto`,
+    //   handler: () => {
+    //     this.editWorship(worship);
+    //   }
+    // });
 
     buttons.push({
       cssClass: 'color-danger',

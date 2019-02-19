@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button>
-        <ion-badge>{{ musicsSelectedArray.length || 0 }}</ion-badge>
+        <ion-badge color="tertiary">{{ musicsSelectedArray.length || 0 }}</ion-badge>
       </ion-button>
     </ion-buttons>
     <ion-title>Repertório</ion-title>
@@ -93,7 +93,7 @@
 
     <ion-list padding style="margin-left: -2vh">
       <ion-reorder-group (ionItemReorder)="reorderItems($event)" disabled="false">
-        <ion-item *ngFor="let music of musicsSelectedArray; let i = index">
+        <ion-item (click)="showOptions(music)" *ngFor="let music of musicsSelectedArray; let i = index">
           <ion-label>{{ i + 1 }}. {{ music.name }}</ion-label>
           <ion-reorder></ion-reorder>
         </ion-item>

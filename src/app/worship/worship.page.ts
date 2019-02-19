@@ -159,4 +159,15 @@ export class WorshipPage implements OnInit {
       });
     });
   }
+
+  reorderItems(ev) {
+    let musicSelectedTemp: any[] = this.worshipForm.value.musics;
+    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
+
+    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
+    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
+    this.worshipForm.value.musics = musicSelectedTemp;
+
+    ev.detail.complete();
+  }
 }
