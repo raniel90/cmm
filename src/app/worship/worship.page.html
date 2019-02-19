@@ -6,9 +6,12 @@
       </ion-button>
     </ion-buttons>
     <ion-title>Culto</ion-title>
-    <ion-buttons slot="primary" *ngIf="worshipForm.value.id">
-      <ion-button (click)="presentAlertRemoveWorship()">
-        <ion-icon name="trash"></ion-icon>
+    <ion-buttons slot="primary" (click)="addMusics()">
+      <ion-button>
+        <ion-icon name="musical-notes"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-badge>{{ worshipForm && worshipForm.value.musics.length ? worshipForm.value.musics.length : 0 }}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -16,17 +19,18 @@
 
 <ion-content>
   <form [formGroup]="worshipForm">
-    <ion-row padding>
+    <ion-row padding style="padding-bottom: 0">
       <ion-col style="margin-left:-1vh">
         <ion-item>
           <ion-label position="stacked" color="primary">
             Data do Culto
           </ion-label>
-          <ion-datetime style="margin-top:1vh" formControlName="date" display-format="DD/MM/YYYY" required></ion-datetime>
+          <ion-datetime style="margin-top:1vh" formControlName="date" display-format="DD/MM/YYYY" required>
+          </ion-datetime>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row padding>
+    <ion-row padding style="padding-bottom: 0">
       <ion-col style="margin-left:-1vh">
         <ion-item>
           <ion-label position="stacked" color="primary">
@@ -41,7 +45,7 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row padding>
+    <ion-row padding style="padding-bottom: 0">
       <ion-col style="margin-left:-1vh">
         <ion-item>
           <ion-label position="stacked" color="primary">
@@ -54,12 +58,7 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row padding>
-      <ion-col>
-        <ion-button color="secondary" (click)="addMusics()" expand="full">Repertório</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row padding style="margin-top:-4vh">
+    <ion-row padding style="padding-bottom: 0">
       <ion-col>
         <ion-button [disabled]="worshipForm.invalid" (click)="saveWorship()" expand="full">Salvar</ion-button>
       </ion-col>

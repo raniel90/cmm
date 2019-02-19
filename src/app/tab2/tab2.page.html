@@ -19,7 +19,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid (click)="showOptions(worship)" no-padding *ngFor="let worship of worships">
+  <ion-grid (click)="showOptions(worship, i)" no-padding *ngFor="let worship of worships; let i = index">
     <ion-item no-padding lines="none" class="worship-date">
       <ion-row no-padding>
         <ion-col>
@@ -34,7 +34,7 @@
         </ion-col>
       </ion-row>
       <ion-note slot="end" style="margin-top:0.5vh">
-        <ion-badge color="tertiary">{{ worship.shift }}</ion-badge>
+        <ion-badge color="tertiary">{{ worship.shift }} ({{ worship.musics ? worship.musics.length : 0 }})</ion-badge>
       </ion-note>
     </ion-item>
   </ion-grid>

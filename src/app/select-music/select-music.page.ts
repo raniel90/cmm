@@ -14,6 +14,7 @@ import { UtilsService } from '../utils.service';
 export class SelectMusicPage implements OnInit {
   public themes: any;
   public musicsSelected = {};
+  public musicsSelectedArray = [];
   public themesTemp: any;
   public filter = {
     name: '',
@@ -31,6 +32,20 @@ export class SelectMusicPage implements OnInit {
     private themeService: ThemeService,
     private navController: NavController,
     private utils: UtilsService) {
+
+
+    // reorderGroup.addEventListener('ionItemReorder', (ev) => {
+    //   console.log(`Moving item from ${ev.detail.from} to ${ev.detail.to}`);
+
+    //   this.dataList = reorderArray(this.dataList, ev.detail.from, ev.detail.to);
+    //   ev.detail.complete();
+    // });
+  }
+
+  reorderItems(ev) {
+    let itemToMove = this.musicsSelectedArray.splice(ev.detail.from, 1)[0];
+    this.musicsSelectedArray.splice(ev.detail.to, 0, itemToMove);
+    ev.detail.complete();
   }
 
   async ngOnInit() {
@@ -68,6 +83,7 @@ export class SelectMusicPage implements OnInit {
     let themesObj = {}
     let themesArray = [];
     let musicsSavedObj = {};
+    let hasMusicSaved = false;
     let musicsSaved = await this.storage.get('musics');
     let musicsArray: any = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref =>
@@ -91,7 +107,19 @@ export class SelectMusicPage implements OnInit {
           if (musicsSavedObj[music.id] && item === musicsSavedObj[music.id].theme_name) {
             music.selected = true;
             music.theme_name = item;
-            this.musicsSelected[music.id] = music;
+            hasMusicSaved = true;
+
+            if (!this.musicsSelected[music.id]) {
+              this.musicsSelectedArray.push({
+                created_at: musicsSavedObj[music.id].created_at,
+                ...music
+              });
+            }
+
+            this.musicsSelected[music.id] = {
+              created_at: musicsSavedObj[music.id].created_at,
+              ...music
+            };
           }
 
           themesObj[item].musics[music.id] = music;
@@ -116,7 +144,9 @@ export class SelectMusicPage implements OnInit {
     this.themes = _.orderBy(themesArray, ['name'], ['asc']);
     this.themesTemp = this.themes;
 
-    if (Object.keys(this.musicsSelected).length) {
+    this.musicsSelectedArray = _.orderBy(this.musicsSelectedArray, ['created_at'], ['asc']);
+
+    if (hasMusicSaved) {
       this.selectedSegment = 'saved';
     }
   }
@@ -172,6 +202,7 @@ export class SelectMusicPage implements OnInit {
 
   selectMusic(musicSelected, indexTheme, indexMusic) {
     let music;
+    let createdAt = new Date().getTime();
 
     if (musicSelected.selected) {
       this.removeMusic(musicSelected);
@@ -182,15 +213,24 @@ export class SelectMusicPage implements OnInit {
 
     music.theme_name = this.themes[indexTheme].name;
     this.themes[indexTheme].musics[indexMusic].selected = true;
-    this.musicsSelected[music.id] = music;
+    this.musicsSelected[music.id] = {
+      created_at: createdAt,
+      ...music
+    };
+    this.musicsSelectedArray.push({
+      created_at: createdAt,
+      ...music
+    });
   }
 
   removeMusic(music) {
     const indexTheme = this.themes.map((theme) => theme.name).indexOf(music.theme_name);
     const indexMusic = this.themes[indexTheme].musics.map((music) => music.id).indexOf(music.id);
+    const indexSelected = this.musicsSelectedArray.map((music) => music.id).indexOf(music.id);
 
     this.themes[indexTheme].musics[indexMusic].selected = false;
     delete this.musicsSelected[music.id];
+    this.musicsSelectedArray.splice(indexSelected, 1);
   }
 
   viewMusic(music) {
@@ -245,6 +285,7 @@ export class SelectMusicPage implements OnInit {
     });
 
     buttons.push({
+      cssClass: music.selected ? 'color-danger' : 'color-primary',
       text: music.selected ? 'Remover do repertório' : 'Adicionar ao repertório',
       handler: () => {
         this.selectMusic(music, indexTheme, indexMusic);
@@ -259,7 +300,7 @@ export class SelectMusicPage implements OnInit {
   }
 
   goBack() {
-    this.storage.set('musics', JSON.stringify(this.musicsSelected));
+    this.storage.set('musics', JSON.stringify(this.musicsSelectedArray));
     this.navController.navigateBack(['/worship']);
   }
 }
