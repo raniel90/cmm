@@ -32,19 +32,16 @@ export class SelectMusicPage implements OnInit {
     private themeService: ThemeService,
     private navController: NavController,
     private utils: UtilsService) {
-
-
-    // reorderGroup.addEventListener('ionItemReorder', (ev) => {
-    //   console.log(`Moving item from ${ev.detail.from} to ${ev.detail.to}`);
-
-    //   this.dataList = reorderArray(this.dataList, ev.detail.from, ev.detail.to);
-    //   ev.detail.complete();
-    // });
   }
 
   reorderItems(ev) {
-    let itemToMove = this.musicsSelectedArray.splice(ev.detail.from, 1)[0];
-    this.musicsSelectedArray.splice(ev.detail.to, 0, itemToMove);
+    let musicSelectedTemp: any[] = this.musicsSelectedArray;
+    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
+
+    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
+    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
+    this.musicsSelectedArray = musicSelectedTemp;
+
     ev.detail.complete();
   }
 
@@ -111,13 +108,13 @@ export class SelectMusicPage implements OnInit {
 
             if (!this.musicsSelected[music.id]) {
               this.musicsSelectedArray.push({
-                created_at: musicsSavedObj[music.id].created_at,
+                order: musicsSavedObj[music.id].order,
                 ...music
               });
             }
 
             this.musicsSelected[music.id] = {
-              created_at: musicsSavedObj[music.id].created_at,
+              order: musicsSavedObj[music.id].order,
               ...music
             };
           }
@@ -144,7 +141,7 @@ export class SelectMusicPage implements OnInit {
     this.themes = _.orderBy(themesArray, ['name'], ['asc']);
     this.themesTemp = this.themes;
 
-    this.musicsSelectedArray = _.orderBy(this.musicsSelectedArray, ['created_at'], ['asc']);
+    this.musicsSelectedArray = _.orderBy(this.musicsSelectedArray, ['order'], ['asc']);
 
     if (hasMusicSaved) {
       this.selectedSegment = 'saved';
@@ -202,7 +199,7 @@ export class SelectMusicPage implements OnInit {
 
   selectMusic(musicSelected, indexTheme, indexMusic) {
     let music;
-    let createdAt = new Date().getTime();
+    const order = this.musicsSelectedArray.length + 1;
 
     if (musicSelected.selected) {
       this.removeMusic(musicSelected);
@@ -214,11 +211,11 @@ export class SelectMusicPage implements OnInit {
     music.theme_name = this.themes[indexTheme].name;
     this.themes[indexTheme].musics[indexMusic].selected = true;
     this.musicsSelected[music.id] = {
-      created_at: createdAt,
+      order,
       ...music
     };
     this.musicsSelectedArray.push({
-      created_at: createdAt,
+      order,
       ...music
     });
   }
