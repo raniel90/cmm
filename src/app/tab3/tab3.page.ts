@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import * as _ from 'lodash';
 import { ActionSheetController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +16,8 @@ export class Tab3Page {
     private af: AngularFirestore,
     private actionSheet: ActionSheetController,
     private storage: Storage,
-    private nav: NavController
+    private nav: NavController,
+    private utils: UtilsService
   ) { }
 
   musics = [];
@@ -29,10 +31,10 @@ export class Tab3Page {
   }
 
   async mount() {
-    let playlists: any = await this.getValueFromObservable(
+    let playlists: any = await this.utils.getValueFromObservable(
       this.af.collection('playlists').valueChanges()
     );
-    let musicsArray: any = await this.getValueFromObservable(
+    let musicsArray: any = await this.utils.getValueFromObservable(
       this.af.collection('musics').valueChanges()
     );
 
@@ -81,30 +83,5 @@ export class Tab3Page {
   async viewHistoryPlayed(music) {
     await this.storage.set('musicHistory', JSON.stringify(music));
     this.nav.navigateForward(['/history-played']);
-  }
-
-  async showOptions(music) {
-    let buttons = [];
-
-    buttons.push({
-      text: `Ver histórico`,
-      handler: () => {
-        this.viewHistoryPlayed(music);
-      }
-    });
-
-    const actionSheet = await this.actionSheet.create({
-      header: `${music.artist} - ${music.name}`,
-      buttons: buttons
-    });
-    await actionSheet.present();
-  }
-
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
   }
 }

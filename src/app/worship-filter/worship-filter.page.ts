@@ -11,10 +11,10 @@ import * as moment from 'moment';
 export class WorshipFilterPage implements OnInit {
 
   filter = {
-    band: null,
+    band: '',
     end_date: null,
     start_date: null,
-    shift: null
+    shift: ''
   };
 
   constructor(
@@ -58,6 +58,10 @@ export class WorshipFilterPage implements OnInit {
   redirect() {
     this.storage.set('goToTab2', 'true');
     this.navController.navigateBack(['/tabs']);
+  }
+
+  goBack() {
+    this.navController.navigateBack(['/tabs/tab2']);
   }
 
   async presentAlert(message) {

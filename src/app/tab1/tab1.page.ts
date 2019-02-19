@@ -4,6 +4,7 @@ import { NavController, ActionSheetController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as _ from 'lodash';
 import { ThemeService } from '../theme.service';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-tab1',
@@ -25,7 +26,8 @@ export class Tab1Page implements OnInit {
     private nav: NavController,
     private storage: Storage,
     private actionSheet: ActionSheetController,
-    private themeService: ThemeService) {
+    private themeService: ThemeService,
+    private utils: UtilsService) {
   }
 
   async ngOnInit() {
@@ -62,7 +64,7 @@ export class Tab1Page implements OnInit {
   async list() {
     let themesObj = {}
     let themesArray = [];
-    let musicsArray: any = await this.getValueFromObservable(
+    let musicsArray: any = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref =>
         ref.orderBy('name', 'asc')).valueChanges()
     );
@@ -104,7 +106,7 @@ export class Tab1Page implements OnInit {
       anthem: (this.selectedSegment === 'anthem' ? "Sim" : "Não")
     };
 
-    this.themes = await this.getValueFromObservable(
+    this.themes = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref => ref
         .where('anthem', '==', filter.anthem)
         .orderBy('name', 'asc')).valueChanges()
@@ -121,14 +123,6 @@ export class Tab1Page implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
-  }
-
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
   }
 
   filterData() {
@@ -164,7 +158,7 @@ export class Tab1Page implements OnInit {
       buttons.push({
         text: `Abrir no Youtube`,
         handler: () => {
-          window.open(music.link);
+          this.utils.openUrl(music.link);
         }
       });
     }
@@ -173,7 +167,7 @@ export class Tab1Page implements OnInit {
       buttons.push({
         text: `Abrir no Spotify`,
         handler: () => {
-          window.open(music.linkSpotify);
+          this.utils.openUrl(music.linkSpotify);
         }
       });
     }
@@ -182,7 +176,7 @@ export class Tab1Page implements OnInit {
       buttons.push({
         text: `Abrir no Deezer`,
         handler: () => {
-          window.open(music.linkDeezer);
+          this.utils.openUrl(music.linkDeezer);
         }
       });
     }

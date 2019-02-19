@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { ThemeService } from '../theme.service';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-music',
@@ -24,7 +25,8 @@ export class MusicComponent implements OnInit {
     private alertController: AlertController,
     private nav: NavController,
     private loadingController: LoadingController,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private utils: UtilsService
   ) {
   }
 
@@ -218,7 +220,7 @@ export class MusicComponent implements OnInit {
   async hasMusicInPlaylist() {
     let hasMusicInPlaylist = false;
 
-    const musicFromPlaylist: any = await this.getValueFromObservable(
+    const musicFromPlaylist: any = await this.utils.getValueFromObservable(
       this.af.collection('playlists', ref => ref
         .where('music_id', '==', this.musicForm.value.id)
         .limit(1))
@@ -231,13 +233,4 @@ export class MusicComponent implements OnInit {
 
     return hasMusicInPlaylist;
   }
-
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
-  }
-
 }

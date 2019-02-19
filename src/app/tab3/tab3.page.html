@@ -21,7 +21,7 @@
   </ion-row>
 
   <div *ngIf="reportName">
-    <ion-grid (click)="showOptions(music)" no-padding *ngFor="let music of musics">
+    <ion-grid (click)="viewHistoryPlayed(music)" no-padding *ngFor="let music of musics">
       <ion-item no-padding lines="none" class="music-artist">
         <ion-row no-padding>
           <ion-col>

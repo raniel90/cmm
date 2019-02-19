@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-worship',
@@ -17,13 +17,13 @@ export class WorshipPage implements OnInit {
   public worshipForm: FormGroup;
 
   constructor(
-    private route: ActivatedRoute,
     private af: AngularFirestore,
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private nav: NavController,
     private loadingController: LoadingController,
-    private storage: Storage) { }
+    private storage: Storage,
+    private utils: UtilsService) { }
 
   initForm() {
     this.worshipForm = this.formBuilder.group({
@@ -156,7 +156,7 @@ export class WorshipPage implements OnInit {
   }
 
   async removePlaylist(id) {
-    const docsToRemove: any = await this.getValueFromObservable(
+    const docsToRemove: any = await this.utils.getValueFromObservable(
       this.af.collection('playlists', ref => ref
         .where('worship_id', '==', id))
         .valueChanges()
