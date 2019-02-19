@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Filtar Cultos</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Filtrar Cultos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,22 +16,17 @@
     </ion-label>
   </ion-row>
 
-  <ion-item lines="none" padding style="padding-top: 0; padding-bottom: 0">
-    <ion-segment [(ngModel)]="filter.band">
-      <ion-segment-button value="Banda 1">
-        <ion-label>Banda 1</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Banda 2">
-        <ion-label>Banda 2</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Banda 3">
-        <ion-label>Banda 3</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Banda Mix">
-        <ion-label>Banda Mix</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-item>
+  <ion-row style="margin-left: 1vh;margin-right: 2vh">
+    <ion-col>
+      <ion-select placeholder="Filtrar por bandas" [(ngModel)]="filter.band">
+        <ion-select-option value="">Todas as bandas</ion-select-option>
+        <ion-select-option value="Banda 1">Banda 1</ion-select-option>
+        <ion-select-option value="Banda 2">Banda 2</ion-select-option>
+        <ion-select-option value="Banda 3">Banda 3</ion-select-option>
+        <ion-select-option value="Banda Mix">Banda Mix</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
 
   <ion-row color="light" padding style="background-color: #f4f5f8">
     <ion-label style="margin-left: 2vh">
@@ -34,16 +34,16 @@
     </ion-label>
   </ion-row>
 
-  <ion-item lines="none" padding style="padding-top: 0; padding-bottom: 0">
-    <ion-segment [(ngModel)]="filter.shift">
-      <ion-segment-button value="Matutino">
-        <ion-label>Matutino</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Noturno">
-        <ion-label>Noturno</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-item>
+  <ion-row style="margin-left: 1vh;margin-right: 2vh">
+    <ion-col>
+      <ion-select placeholder="Filtrar por turno" [(ngModel)]="filter.shift">
+        <ion-select-option value="">Todos os turnos</ion-select-option>
+        <ion-select-option value="Matutino">Matutino</ion-select-option>
+        <ion-select-option value="Noturno">Noturno</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
 
   <ion-row color="light" padding style="background-color: #f4f5f8">
     <ion-label style="margin-left: 2vh">
@@ -51,35 +51,36 @@
     </ion-label>
   </ion-row>
 
-  <ion-row padding>
+  <ion-row padding style="padding-bottom: 0">
     <ion-col style="margin-left:-1vh">
       <ion-item>
         <ion-label position="stacked" color="primary">
           Data Início
         </ion-label>
-        <ion-datetime style="margin-top:1vh" [(ngModel)]="filter.start_date" display-format="DD/MM/YYYY"></ion-datetime>
+        <ion-datetime style="margin-left:1vh" [(ngModel)]="filter.start_date" display-format="DD/MM/YYYY">
+        </ion-datetime>
       </ion-item>
     </ion-col>
   </ion-row>
 
-  <ion-row padding>
-    <ion-col style="margin-left:-1vh">
+  <ion-row padding style="padding-bottom: 0;margin-left:-1vh">
+    <ion-col>
       <ion-item>
         <ion-label position="stacked" color="primary">
           Data Fim
         </ion-label>
-        <ion-datetime style="margin-top:1vh" [(ngModel)]="filter.end_date" display-format="DD/MM/YYYY"></ion-datetime>
+        <ion-datetime [(ngModel)]="filter.end_date" display-format="DD/MM/YYYY"></ion-datetime>
       </ion-item>
     </ion-col>
   </ion-row>
 
-  <ion-row padding>
+  <ion-row padding style="padding-bottom: 0">
     <ion-col>
       <ion-button color="secondary" (click)="clearFilter()" expand="full">Limpar Filtros</ion-button>
     </ion-col>
   </ion-row>
 
-  <ion-row padding style="margin-top:-4vh">
+  <ion-row padding style="margin-top:-4vh;padding-bottom: 0">
     <ion-col>
       <ion-button (click)="filterWorship()" expand="full">Filtrar</ion-button>
     </ion-col>

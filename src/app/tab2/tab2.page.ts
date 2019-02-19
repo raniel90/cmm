@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NavController } from '@ionic/angular';
+import { NavController, ActionSheetController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as moment from 'moment';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-tab2',
@@ -20,7 +21,9 @@ export class Tab2Page implements OnInit {
   constructor(
     private af: AngularFirestore,
     private nav: NavController,
-    private storage: Storage) {
+    private storage: Storage,
+    private actionSheet: ActionSheetController,
+    private utils: UtilsService, ) {
   }
 
   async ngOnInit() {
@@ -85,7 +88,7 @@ export class Tab2Page implements OnInit {
   }
 
   async list() {
-    this.worships = await this.getValueFromObservable(this.af.collection('worships', ref => ref
+    this.worships = await this.utils.getValueFromObservable(this.af.collection('worships', ref => ref
       .orderBy('date', 'desc')
     ).valueChanges());
     this.worshipsTemp = this.worships;
@@ -99,15 +102,43 @@ export class Tab2Page implements OnInit {
     }, 2000);
   }
 
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
-  }
-
   filterWorship() {
     this.nav.navigateForward(['/worship-filter']);
+  }
+
+  async showOptions(worship) {
+    let buttons = [];
+
+    buttons.push({
+      text: `Compartilhar no Whatsapp`,
+      handler: () => {
+        let data;
+        let musics = `*Músicas*:\n\n`;
+        const header = `*Banda:* ${worship.band}\n*Culto:* ${worship.shift}\n\n`;
+
+        worship.musics.forEach((worshipMusic) => {
+          musics += `*Banda/Artista:* ${worshipMusic.artist}\n*Nome da música:* ${worshipMusic.name} (${worshipMusic.tone})\n*Início da música:* ${worshipMusic.beginMusic}\n\n`;
+        });
+
+        data = `${header}${musics}`;
+
+        let target = `https://wa.me/?text=${encodeURIComponent(data)}`;
+
+        this.utils.openUrl(target);
+      }
+    });
+
+    buttons.push({
+      text: `Detalhar/Alterar Culto`,
+      handler: () => {
+        this.editWorship(worship);
+      }
+    });
+
+    const actionSheet = await this.actionSheet.create({
+      header: `Ações`,
+      buttons: buttons
+    });
+    await actionSheet.present();
   }
 }

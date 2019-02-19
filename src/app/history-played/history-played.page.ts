@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as _ from 'lodash';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-history-played',
@@ -14,7 +15,8 @@ export class HistoryPlayedPage implements OnInit {
   constructor(
     private af: AngularFirestore,
     private nav: NavController,
-    private storage: Storage
+    private storage: Storage,
+    private utils: UtilsService
   ) { }
 
   music: any = {};
@@ -45,20 +47,11 @@ export class HistoryPlayedPage implements OnInit {
   }
 
   async getWorship(worshipId) {
-    return await this.getValueFromObservable(
+    return await this.utils.getValueFromObservable(
       this.af.collection('worships', ref => ref.where('id', '==', worshipId)).valueChanges());
   }
 
   async ngOnDestroy() {
     await this.storage.remove('musicHistory');
   }
-
-  async getValueFromObservable(observable) {
-    return await new Promise(resolve => {
-      observable.subscribe(data => {
-        resolve(data);
-      });
-    });
-  }
-
 }
