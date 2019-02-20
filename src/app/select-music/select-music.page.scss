@@ -41,3 +41,10 @@
     font-weight: normal;
     letter-spacing: .4px;
   }
+
+  .music-name-label {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:94%;
+  }

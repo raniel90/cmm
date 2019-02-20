@@ -5,6 +5,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { UtilsService } from '../utils.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-worship',
@@ -28,7 +29,7 @@ export class WorshipPage implements OnInit {
   initForm() {
     this.worshipForm = this.formBuilder.group({
       id: [null],
-      date: [new Date().toISOString()],
+      date: [moment(moment().format('YYYY-MM-DD')).toISOString()],
       band: [null],
       shift: [null],
       musics: [[]]
@@ -93,7 +94,7 @@ export class WorshipPage implements OnInit {
       return;
     }
 
-    this.loading = await this.utils.presentLoading(this.alertController);
+    this.loading = await this.utils.presentLoading(this.loadingController);
     this.loading.present();
 
     let worshipObservable = this.af

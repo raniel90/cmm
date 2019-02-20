@@ -78,7 +78,7 @@
         <ion-item no-padding>
           <ion-row no-padding>
             <ion-col class="music-name">
-              <ion-label style="margin-left: 2vh">{{ music.name }}</ion-label>
+              <ion-label class="music-name-label" style="margin-left: 2vh">{{ music.name }}</ion-label>
             </ion-col>
           </ion-row>
           <ion-note slot="end">
@@ -99,33 +99,5 @@
         </ion-item>
       </ion-reorder-group>
     </ion-list>
-
-    <!-- <ion-grid (click)="showOptions(music)" no-padding *ngFor="let music of musicsSelectedArray; let i = index">
-      <ion-item no-padding lines="none" class="music-artist">
-        <ion-row no-padding>
-          <ion-col>
-            <ion-label style="margin-left: 2vh">{{ music.artist }}</ion-label>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-      <ion-item no-padding lines="none" class="music-name">
-        <ion-row no-padding>
-          <ion-col>
-            <ion-label style="margin-left: 2vh">{{ i + 1 }}. {{ music.name }}</ion-label>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-      <ion-item no-padding>
-        <ion-row no-padding style="margin-left: 2vh">
-          <ion-col>
-            <ion-badge *ngIf="(music && music.theme_name)" color="secondary">
-              {{ music.theme_name }}</ion-badge>
-          </ion-col>
-        </ion-row>
-        <ion-col>
-          <ion-badge *ngIf="(music.anthem === 'Sim')" color="tertiary">Hino</ion-badge>
-        </ion-col>
-      </ion-item>
-    </ion-grid> -->
   </div>
 </ion-content>

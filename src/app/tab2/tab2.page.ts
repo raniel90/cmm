@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NavController, ActionSheetController, AlertController } from '@ionic/angular';
+import { NavController, ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as moment from 'moment';
 import { UtilsService } from '../utils.service';
@@ -24,6 +24,7 @@ export class Tab2Page implements OnInit {
     private nav: NavController,
     private storage: Storage,
     private actionSheet: ActionSheetController,
+    private loadingController: LoadingController,
     private utils: UtilsService,
     private alertController: AlertController) {
   }
@@ -177,7 +178,7 @@ export class Tab2Page implements OnInit {
   }
 
   async removeWorship(id, index) {
-    this.loading = await this.utils.presentLoading(this.alertController);
+    this.loading = await this.utils.presentLoading(this.loadingController);
     this.loading.present();
 
     let worshipObservable = this.af
