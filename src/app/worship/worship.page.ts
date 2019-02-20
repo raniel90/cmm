@@ -5,6 +5,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { UtilsService } from '../utils.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-worship',
@@ -28,7 +29,7 @@ export class WorshipPage implements OnInit {
   initForm() {
     this.worshipForm = this.formBuilder.group({
       id: [null],
-      date: [new Date().toISOString()],
+      date: [moment(moment().format('YYYY-MM-DD')).toISOString()],
       band: [null],
       shift: [null],
       musics: [[]]
@@ -41,17 +42,10 @@ export class WorshipPage implements OnInit {
   }
 
   async ionViewDidEnter() {
-    let musicsArray = [];
     let musics = await this.storage.get('musics');
 
     if (musics) {
-      musics = JSON.parse(musics);
-
-      Object.keys(musics).forEach((key) => {
-        musicsArray.push(musics[key]);
-      });
-
-      this.worshipForm.value.musics = musicsArray || [];
+      this.worshipForm.value.musics = JSON.parse(musics) || [];
     }
   }
 
@@ -100,7 +94,8 @@ export class WorshipPage implements OnInit {
       return;
     }
 
-    await this.presentLoading();
+    this.loading = await this.utils.presentLoading(this.loadingController);
+    this.loading.present();
 
     let worshipObservable = this.af
       .collection("worships")
@@ -113,15 +108,15 @@ export class WorshipPage implements OnInit {
     await worshipObservable.set(worship);
     await this.savePlaylist(worship);
     await this.storage.remove('musics');
-    await this.dismissLoading();
-    this.presentAlertConfirm(message);
+    await this.utils.dismissLoading(this.loading);
+    await this.utils.presentAlertConfirm(this.alertController, message, () => this.goBack());
   }
 
   async savePlaylist(worship) {
     const isEdit = this.worshipForm.value.id ? true : false;
 
     if (isEdit) {
-      await this.removePlaylist(worship.id);
+      await this.utils.removePlaylist(worship.id);
     }
 
     await worship.musics.forEach((music) => {
@@ -134,44 +129,6 @@ export class WorshipPage implements OnInit {
         worship_id: worship.id,
         date: worship.date
       });
-    });
-  }
-
-  async removeWorship() {
-    const worship = {
-      id: this.worshipForm.value.id || new Date().getTime().toString(),
-    };
-
-    await this.presentLoading();
-
-    let worshipObservable = this.af
-      .collection("worships")
-      .doc(worship.id);
-
-    await worshipObservable.delete();
-    await this.removePlaylist(worship.id);
-    await this.storage.remove('musics');
-    await this.dismissLoading();
-    this.presentAlertConfirm('Culto removido com sucesso!');
-  }
-
-  async removePlaylist(id) {
-    const docsToRemove: any = await this.utils.getValueFromObservable(
-      this.af.collection('playlists', ref => ref
-        .where('worship_id', '==', id))
-        .valueChanges()
-    );
-
-    if (!docsToRemove) {
-      return;
-    }
-
-    await docsToRemove.forEach((doc) => {
-      const observable = this.af
-        .collection("playlists")
-        .doc(`${doc.music_id}_${doc.worship_id}`);
-
-      observable.delete();
     });
   }
 
@@ -191,60 +148,6 @@ export class WorshipPage implements OnInit {
     await alert.present();
   }
 
-  async presentAlertConfirm(message) {
-    const alert = await this.alertController.create({
-      header: 'Mensagem',
-      message: message,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.goBack();
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  async presentAlertRemoveWorship() {
-    const alert = await this.alertController.create({
-      header: 'Atenção',
-      message: 'Você deseja excluir este Culto?',
-      buttons: [
-        {
-          text: 'Sim',
-          cssClass: 'color-danger',
-          handler: () => {
-            this.removeWorship();
-          }
-        },
-        {
-          text: 'Não',
-          handler: () => {
-
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  async presentLoading() {
-    this.loading = await this.loadingController.create({
-      message: 'Por favor, aguarde...',
-    });
-    return await this.loading.present();
-  }
-
-  async dismissLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-    }
-  }
-
   addMusics() {
     this.storage.set('musics', JSON.stringify(this.worshipForm.value.musics));
     this.nav.navigateForward(['/select-music']);
@@ -256,5 +159,16 @@ export class WorshipPage implements OnInit {
         resolve(data);
       });
     });
+  }
+
+  reorderItems(ev) {
+    let musicSelectedTemp: any[] = this.worshipForm.value.musics;
+    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
+
+    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
+    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
+    this.worshipForm.value.musics = musicSelectedTemp;
+
+    ev.detail.complete();
   }
 }

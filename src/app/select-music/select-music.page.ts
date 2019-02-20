@@ -14,6 +14,7 @@ import { UtilsService } from '../utils.service';
 export class SelectMusicPage implements OnInit {
   public themes: any;
   public musicsSelected = {};
+  public musicsSelectedArray = [];
   public themesTemp: any;
   public filter = {
     name: '',
@@ -68,6 +69,7 @@ export class SelectMusicPage implements OnInit {
     let themesObj = {}
     let themesArray = [];
     let musicsSavedObj = {};
+    let hasMusicSaved = false;
     let musicsSaved = await this.storage.get('musics');
     let musicsArray: any = await this.utils.getValueFromObservable(
       this.af.collection('musics', ref =>
@@ -91,7 +93,19 @@ export class SelectMusicPage implements OnInit {
           if (musicsSavedObj[music.id] && item === musicsSavedObj[music.id].theme_name) {
             music.selected = true;
             music.theme_name = item;
-            this.musicsSelected[music.id] = music;
+            hasMusicSaved = true;
+
+            if (!this.musicsSelected[music.id]) {
+              this.musicsSelectedArray.push({
+                order: musicsSavedObj[music.id].order,
+                ...music
+              });
+            }
+
+            this.musicsSelected[music.id] = {
+              order: musicsSavedObj[music.id].order,
+              ...music
+            };
           }
 
           themesObj[item].musics[music.id] = music;
@@ -116,7 +130,9 @@ export class SelectMusicPage implements OnInit {
     this.themes = _.orderBy(themesArray, ['name'], ['asc']);
     this.themesTemp = this.themes;
 
-    if (Object.keys(this.musicsSelected).length) {
+    this.musicsSelectedArray = _.orderBy(this.musicsSelectedArray, ['order'], ['asc']);
+
+    if (hasMusicSaved) {
       this.selectedSegment = 'saved';
     }
   }
@@ -172,6 +188,7 @@ export class SelectMusicPage implements OnInit {
 
   selectMusic(musicSelected, indexTheme, indexMusic) {
     let music;
+    const order = this.musicsSelectedArray.length + 1;
 
     if (musicSelected.selected) {
       this.removeMusic(musicSelected);
@@ -182,15 +199,24 @@ export class SelectMusicPage implements OnInit {
 
     music.theme_name = this.themes[indexTheme].name;
     this.themes[indexTheme].musics[indexMusic].selected = true;
-    this.musicsSelected[music.id] = music;
+    this.musicsSelected[music.id] = {
+      order,
+      ...music
+    };
+    this.musicsSelectedArray.push({
+      order,
+      ...music
+    });
   }
 
   removeMusic(music) {
     const indexTheme = this.themes.map((theme) => theme.name).indexOf(music.theme_name);
     const indexMusic = this.themes[indexTheme].musics.map((music) => music.id).indexOf(music.id);
+    const indexSelected = this.musicsSelectedArray.map((music) => music.id).indexOf(music.id);
 
     this.themes[indexTheme].musics[indexMusic].selected = false;
     delete this.musicsSelected[music.id];
+    this.musicsSelectedArray.splice(indexSelected, 1);
   }
 
   viewMusic(music) {
@@ -245,6 +271,7 @@ export class SelectMusicPage implements OnInit {
     });
 
     buttons.push({
+      cssClass: music.selected ? 'color-danger' : 'color-primary',
       text: music.selected ? 'Remover do repertório' : 'Adicionar ao repertório',
       handler: () => {
         this.selectMusic(music, indexTheme, indexMusic);
@@ -259,7 +286,18 @@ export class SelectMusicPage implements OnInit {
   }
 
   goBack() {
-    this.storage.set('musics', JSON.stringify(this.musicsSelected));
+    this.storage.set('musics', JSON.stringify(this.musicsSelectedArray));
     this.navController.navigateBack(['/worship']);
+  }
+
+  reorderItems(ev) {
+    let musicSelectedTemp: any[] = this.musicsSelectedArray;
+    let itemToMove = musicSelectedTemp.splice(ev.detail.from, 1)[0];
+
+    musicSelectedTemp.splice(ev.detail.to, 0, itemToMove);
+    musicSelectedTemp.forEach((item, index) => musicSelectedTemp[index].order = index);
+    this.musicsSelectedArray = musicSelectedTemp;
+
+    ev.detail.complete();
   }
 }

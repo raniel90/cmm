@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NavController, ActionSheetController } from '@ionic/angular';
+import { NavController, ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as moment from 'moment';
 import { UtilsService } from '../utils.service';
@@ -11,6 +11,7 @@ import { UtilsService } from '../utils.service';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page implements OnInit {
+  public loading = null;
   public worships: any;
   public worshipFilter;
   public worshipsTemp;
@@ -23,7 +24,9 @@ export class Tab2Page implements OnInit {
     private nav: NavController,
     private storage: Storage,
     private actionSheet: ActionSheetController,
-    private utils: UtilsService, ) {
+    private loadingController: LoadingController,
+    private utils: UtilsService,
+    private alertController: AlertController) {
   }
 
   async ngOnInit() {
@@ -106,7 +109,7 @@ export class Tab2Page implements OnInit {
     this.nav.navigateForward(['/worship-filter']);
   }
 
-  async showOptions(worship) {
+  async showOptions(worship, index) {
     let buttons = [];
 
     buttons.push({
@@ -128,10 +131,18 @@ export class Tab2Page implements OnInit {
       }
     });
 
+    // buttons.push({
+    //   text: `Detalhar/Alterar Culto`,
+    //   handler: () => {
+    //     this.editWorship(worship);
+    //   }
+    // });
+
     buttons.push({
-      text: `Detalhar/Alterar Culto`,
+      cssClass: 'color-danger',
+      text: `Remover Culto`,
       handler: () => {
-        this.editWorship(worship);
+        this.presentAlertRemoveWorship(worship.id, index);
       }
     });
 
@@ -140,5 +151,45 @@ export class Tab2Page implements OnInit {
       buttons: buttons
     });
     await actionSheet.present();
+  }
+
+  async presentAlertRemoveWorship(id, index) {
+    const alert = await this.alertController.create({
+      header: 'Atenção',
+      message: 'Você deseja excluir este Culto?',
+      buttons: [
+        {
+          text: 'Sim',
+          cssClass: 'color-danger',
+          handler: () => {
+            this.removeWorship(id, index);
+          }
+        },
+        {
+          text: 'Não',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async removeWorship(id, index) {
+    this.loading = await this.utils.presentLoading(this.loadingController);
+    this.loading.present();
+
+    let worshipObservable = this.af
+      .collection("worships")
+      .doc(id);
+
+    await worshipObservable.delete();
+    await this.utils.removePlaylist(id);
+    await this.storage.remove('musics');
+    this.worships.splice(index, 1);
+    await this.utils.dismissLoading(this.loading);
+    await this.utils.presentAlertConfirm(this.alertController, 'Culto removido com sucesso!');
   }
 }
