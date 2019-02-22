@@ -49,6 +49,15 @@
     </ion-col>
   </ion-row>
 
+  <ion-row style="margin-left:-1vh;margin-right:0.5vh">
+    <ion-col>
+      <ion-select placeholder="Filtrar por período" [(ngModel)]="selectedPeriod" (ionChange)="filterData()">
+        <ion-select-option value="all">Todos os períodos</ion-select-option>
+        <ion-select-option value="01_2019">1º Semestre/2019</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
   <div style="margin-top:1vh">
     <ion-item-group *ngFor="let theme of themes">
       <ion-item-divider *ngIf="theme.musics.length && selectedTheme === 'all'" class="theme-name">
