@@ -20,6 +20,7 @@ export class Tab1Page implements OnInit {
   };
   public selectedSegment = 'all';
   public selectedTheme = 'all';
+  public selectedPeriod = 'all';
 
   constructor(
     private af: AngularFirestore,
@@ -137,6 +138,10 @@ export class Tab1Page implements OnInit {
         }
 
         if (this.selectedTheme !== 'all' && theme.name !== this.selectedTheme) {
+          return false;
+        }
+
+        if (this.selectedPeriod !== 'all' && music.period !== this.selectedPeriod) {
           return false;
         }
 
