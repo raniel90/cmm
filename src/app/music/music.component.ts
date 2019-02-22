@@ -44,6 +44,7 @@ export class MusicComponent implements OnInit {
       tone: [null],
       reference: [null],
       sheetMusic: [null],
+      period: [null]
     });
 
     
@@ -88,6 +89,7 @@ export class MusicComponent implements OnInit {
           tone: [music.tone],
           reference: [music.reference],
           sheetMusic: [music.sheetMusic],
+          period: [music.period]
         })
       }
     });
@@ -107,7 +109,8 @@ export class MusicComponent implements OnInit {
       theme: this.musicForm.value.theme,
       tone: this.musicForm.value.tone,
       reference: this.musicForm.value.reference,
-      sheetMusic: this.musicForm.value.sheetMusic
+      sheetMusic: this.musicForm.value.sheetMusic,
+      period: this.musicForm.value.period
     };
 
     await this.presentLoading();

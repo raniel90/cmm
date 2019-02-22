@@ -145,6 +145,19 @@
       <ion-col style="margin-left:-1vh">
         <ion-item>
           <ion-label position="stacked" color="primary">
+            Período
+          </ion-label>
+          <ion-select placeholder="Selecione" formControlName="period">
+            <ion-select-option value="">Nenhum</ion-select-option>
+            <ion-select-option value="01_2019">1º Semestre/2019</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row padding style="padding-bottom: 0">
+      <ion-col style="margin-left:-1vh">
+        <ion-item>
+          <ion-label position="stacked" color="primary">
             Referência bíblica
           </ion-label>
           <ion-input formControlName="reference" placeholder="Informe a referência bíblica"></ion-input>
