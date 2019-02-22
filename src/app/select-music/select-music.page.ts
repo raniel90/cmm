@@ -22,7 +22,7 @@ export class SelectMusicPage implements OnInit {
   };
   public selectedSegment = 'all';
   public selectedTheme = 'all';
-  objectKeys = Object.keys;
+  public selectedPeriod = 'all';
 
   constructor(
     private af: AngularFirestore,
@@ -173,6 +173,10 @@ export class SelectMusicPage implements OnInit {
         }
 
         if (this.selectedTheme !== 'all' && theme.name !== this.selectedTheme) {
+          return false;
+        }
+
+        if (this.selectedPeriod !== 'all' && music.period !== this.selectedPeriod) {
           return false;
         }
 

@@ -51,7 +51,17 @@
   <ion-row style="margin-left:-1vh;margin-right:0.5vh" *ngIf="selectedSegment !== 'saved'">
     <ion-col>
       <ion-select placeholder="Filtrar por temas" [(ngModel)]="selectedTheme" (ionChange)="filterData()">
+        <ion-select-option value="all">Todos os temas</ion-select-option>
         <ion-select-option *ngFor="let theme of filter.themes" value="{{ theme }}">{{ theme }}</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
+  <ion-row style="margin-left:-1vh;margin-right:0.5vh" *ngIf="selectedSegment !== 'saved'">
+    <ion-col>
+      <ion-select placeholder="Filtrar por período" [(ngModel)]="selectedPeriod" (ionChange)="filterData()">
+        <ion-select-option value="all">Todos os períodos</ion-select-option>
+        <ion-select-option value="01_2019">1º Semestre/2019</ion-select-option>
       </ion-select>
     </ion-col>
   </ion-row>
