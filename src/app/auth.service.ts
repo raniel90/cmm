@@ -51,6 +51,10 @@ export class AuthService {
   getPtBrMessage(response) {
     const code = response.code;
 
+    if (code === "auth/wrong-password") {
+      return 'Senha incorreta!'
+    }
+
     if (code === "auth/user-not-found") {
       return 'Usuário não cadastrado!'
     }
