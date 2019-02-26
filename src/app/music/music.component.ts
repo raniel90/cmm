@@ -17,6 +17,7 @@ export class MusicComponent implements OnInit {
   loading: any;
   themes;
   isEdit = true;
+  paramsBackTo = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -46,16 +47,10 @@ export class MusicComponent implements OnInit {
       sheetMusic: [null],
       period: [null]
     });
-
-    
   }
 
   goBack() {
-    if (this.isEdit) {
-      this.nav.navigateRoot(['/tabs']);
-    } else {
-      this.nav.navigateBack(['/select-music']);
-    }
+    this.nav.navigateRoot([this.paramsBackTo]);
   }
 
   async ngOnInit() {
@@ -72,7 +67,8 @@ export class MusicComponent implements OnInit {
         return;
       }
 
-      this.isEdit = params.is_edit === "true" ? true : false;
+      this.isEdit = params.is_edit === 'true' ? true : false;
+      this.paramsBackTo = params.back_to;
       music = JSON.parse(params.music);
 
       if (music) {

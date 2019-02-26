@@ -26,20 +26,28 @@ export class UtilsService {
     });
   }
 
-  async presentAlertConfirm(controller, message, callback?) {
+  async presentAlertConfirm(controller, message, callback?, options?) {
+    let buttons = [{
+      text: options && options.label_yes ? options.label_yes : 'Ok',
+      handler: () => {
+        if (callback) {
+          callback();
+        }
+      },
+    }];
+
+    if (options && options.with_cancel) {
+      buttons.push({
+        text: options && options.label_no ? options.label_no : 'Cancelar',
+        handler: () => {
+        },
+      });
+    }
+
     const alert = await controller.create({
       header: 'Mensagem',
       message: message,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            if (callback) {
-              callback();
-            }
-          }
-        }
-      ]
+      buttons: buttons
     });
 
     await alert.present();

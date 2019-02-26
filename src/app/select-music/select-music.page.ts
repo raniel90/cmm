@@ -224,7 +224,13 @@ export class SelectMusicPage implements OnInit {
   }
 
   viewMusic(music) {
-    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music), is_edit: false } });
+    this.nav.navigateForward(['/music'], {
+      queryParams: {
+        music: JSON.stringify(music),
+        is_edit: false,
+        back_to: '/select-music'
+      }
+    });
   }
 
   async showOptions(music, indexTheme, indexMusic) {

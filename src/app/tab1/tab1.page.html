@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Músicas</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="isRoot" slot="primary">
       <ion-button (click)="addMusic()">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>

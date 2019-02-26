@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Entrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-row padding style="padding-bottom: 0">
+    <ion-col style="margin-left:-1vh">
+      <ion-item>
+        <ion-label position="stacked" color="primary">
+          E-mail
+        </ion-label>
+        <ion-input type="text" [(ngModel)]="email" placeholder="Digite o e-mail"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row padding style="padding-bottom: 0">
+    <ion-col style="margin-left:-1vh">
+      <ion-item>
+        <ion-label position="stacked" color="primary">
+          Senha
+        </ion-label>
+        <ion-input type="password" [(ngModel)]="password" placeholder="Digite a senha"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row padding style="padding-bottom:0">
+    <ion-col>
+      <ion-button (click)="login()" [disabled]="!email || !password" expand="full">Entrar</ion-button>
+    </ion-col>
+  </ion-row>
+
+  <ion-row padding style="padding-bottom: 0">
+    <ion-col style="margin-left:-1vh;text-align: center">
+      <ion-label>Não é um membro?</ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-row (click)="goToRegister()" padding style="padding-bottom: 0;font-weight: bold">
+    <ion-col style="margin-left:-1vh;text-align: center">
+      <ion-label color="primary">Clique aqui e cadastre-se</ion-label>
+    </ion-col>
+  </ion-row>
+
+</ion-content>
