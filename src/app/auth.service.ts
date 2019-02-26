@@ -11,8 +11,8 @@ export class AuthService {
 
   async signup(email: string, password: string) {
     try {
-      await this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
-      return this.getSuccessStatus();
+      const payload = await this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
+      return this.getSuccessStatus(payload);
     } catch (e) {
       return this.getErrorStatus(e);
     }
@@ -20,8 +20,8 @@ export class AuthService {
 
   async login(email: string, password: string) {
     try {
-      await this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
-      return this.getSuccessStatus();
+      const payload = await this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
+      return this.getSuccessStatus(payload);
     } catch (e) {
       return this.getErrorStatus(e);
     }
@@ -33,16 +33,40 @@ export class AuthService {
       .signOut();
   }
 
-  getSuccessStatus() {
+  getSuccessStatus(payload) {
     return {
-      success: true
+      success: true,
+      payload: payload
     }
   }
 
   getErrorStatus(err) {
     return {
       success: false,
+      code: err && err.code ? err.code : null,
       msg: JSON.stringify(err.message)
     }
+  }
+
+  getPtBrMessage(response) {
+    const code = response.code;
+
+    if (code === "auth/user-not-found") {
+      return 'Usuário não cadastrado!'
+    }
+
+    if (code === "auth/invalid-email") {
+      return 'E-mail inválido!'
+    }
+
+    if (code === "auth/email-already-in-use") {
+      return 'E-mail já cadastrado!'
+    }
+
+    if (code === "auth/weak-password") {
+      return 'A senha deve ter no mínimo 6 caracteres!'
+    }
+
+    return code;
   }
 }

@@ -1,49 +1,60 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { UtilsService } from '../utils.service';
 import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-register',
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss'],
 })
-export class LoginPage {
+export class RegisterPage {
   loading;
   email: string;
   password: string;
 
-  constructor(
-    private authService: AuthService,
+  constructor(private authService: AuthService,
     private storage: Storage,
     private nav: NavController,
     private utils: UtilsService,
+    private alertController: AlertController,
     private loadingController: LoadingController,
-    private alertController: AlertController) { }
+    private af: AngularFirestore) { }
 
-  async login() {
-    let msg: string = '';
+  async signup() {
+    let msg = '';
 
     await this.presentLoading();
-    const response: any = await this.authService.login(this.email, this.password);
-    this.utils.dismissLoading(this.loading);
+    const response: any = await this.authService.signup(this.email, this.password);
+
     if (response.success) {
       this.storage.set('email', this.email);
       this.storage.set('uid', response.payload.user.uid);
+      await this.saveUser(this.email, response.payload.user.uid)
+      this.utils.dismissLoading(this.loading);
       this.nav.navigateRoot(['tabs']);
     } else {
+      this.utils.dismissLoading(this.loading);
       msg = this.authService.getPtBrMessage(response);
       this.utils.presentAlertConfirm(this.alertController, msg);
     }
   }
 
-  logout() {
-    this.authService.logout();
+  async saveUser(email, uid) {
+    let musicObservable = this.af
+      .collection('users')
+      .doc(email);
+
+    await musicObservable.set({
+      email: email,
+      uid: uid
+    });
   }
 
-  goToRegister() {
-    this.nav.navigateForward(['/register']);
+  goBack() {
+    this.nav.navigateBack(['/login']);
   }
 
   async presentLoading() {
@@ -52,4 +63,5 @@ export class LoginPage {
     });
     return await this.loading.present();
   }
+
 }
