@@ -18,6 +18,7 @@ export class Tab2Page implements OnInit {
   public filter = {
     name: ''
   };
+  public isRoot = false;
 
   constructor(
     private af: AngularFirestore,
@@ -31,6 +32,7 @@ export class Tab2Page implements OnInit {
 
   async ngOnInit() {
     this.worshipFilter = null;
+    this.isRoot = await this.storage.get('user_root');
     await this.storage.remove('worshipFilter');
     this.list();
   }
@@ -131,20 +133,15 @@ export class Tab2Page implements OnInit {
       }
     });
 
-    // buttons.push({
-    //   text: `Detalhar/Alterar Culto`,
-    //   handler: () => {
-    //     this.editWorship(worship);
-    //   }
-    // });
-
-    buttons.push({
-      cssClass: 'color-danger',
-      text: `Remover Culto`,
-      handler: () => {
-        this.presentAlertRemoveWorship(worship.id, index);
-      }
-    });
+    if (this.isRoot) {
+      buttons.push({
+        cssClass: 'color-danger',
+        text: `Remover Culto`,
+        handler: () => {
+          this.presentAlertRemoveWorship(worship.id, index);
+        }
+      });
+    }
 
     const actionSheet = await this.actionSheet.create({
       header: `Ações`,

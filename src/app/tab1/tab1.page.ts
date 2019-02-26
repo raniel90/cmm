@@ -21,6 +21,7 @@ export class Tab1Page implements OnInit {
   public selectedSegment = 'all';
   public selectedTheme = 'all';
   public selectedPeriod = 'all';
+  public isRoot = false;
 
   constructor(
     private af: AngularFirestore,
@@ -32,6 +33,7 @@ export class Tab1Page implements OnInit {
   }
 
   async ngOnInit() {
+    this.isRoot = await this.storage.get('user_root');
     this.filter.themes = this.themeService.getThemes();
     this.list();
   }
@@ -59,7 +61,13 @@ export class Tab1Page implements OnInit {
   }
 
   editMusic(music) {
-    this.nav.navigateForward(['/music'], { queryParams: { music: JSON.stringify(music), is_edit: true } });
+    this.nav.navigateForward(['/music'], {
+      queryParams: {
+        music: JSON.stringify(music),
+        is_edit: this.isRoot ? true : false,
+        back_to: '/tabs'
+      }
+    });
   }
 
   async list() {
@@ -195,8 +203,9 @@ export class Tab1Page implements OnInit {
       });
     }
 
+
     buttons.push({
-      text: `Detalhar/Alterar ${type}`,
+      text: this.isRoot ? `Detalhar/Alterar ${type}` : `Detalhar ${type}`,
       handler: () => {
         this.editMusic(music);
       }

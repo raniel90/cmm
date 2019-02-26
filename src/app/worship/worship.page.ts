@@ -15,6 +15,7 @@ import * as moment from 'moment';
 export class WorshipPage implements OnInit {
   public worship;
   public loading: any;
+  public isRoot = false;
   public worshipForm: FormGroup;
 
   constructor(
@@ -57,6 +58,7 @@ export class WorshipPage implements OnInit {
   async ngOnInit() {
     this.initForm();
     await this.mount();
+    this.isRoot = await this.storage.get('user_root');
   }
 
   async mount() {

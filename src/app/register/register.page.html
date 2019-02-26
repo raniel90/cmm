@@ -1,0 +1,39 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="goBack()">
+          <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Cadastrar</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+  <ion-row padding style="padding-bottom: 0">
+    <ion-col style="margin-left:-1vh">
+      <ion-item>
+        <ion-label position="stacked" color="primary">
+          E-mail
+        </ion-label>
+        <ion-input type="text" [(ngModel)]="email" placeholder="Digite o e-mail"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row padding style="padding-bottom: 0">
+    <ion-col style="margin-left:-1vh">
+      <ion-item>
+        <ion-label position="stacked" color="primary">
+          Senha
+        </ion-label>
+        <ion-input type="password" [(ngModel)]="password" placeholder="Digite a senha"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row padding style="padding-top:0">
+    <ion-col>
+      <ion-button (click)="signup()" [disabled]="!email || !password" expand="full">Cadastrar</ion-button>
+    </ion-col>
+  </ion-row>
+
+</ion-content>
