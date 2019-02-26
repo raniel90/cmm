@@ -30,8 +30,8 @@ export class RegisterPage {
     const response: any = await this.authService.signup(this.email, this.password);
 
     if (response.success) {
-      this.storage.set('email', this.email);
-      this.storage.set('uid', response.payload.user.uid);
+      this.storage.set('user_email', this.email);
+      this.storage.set('user_uid', response.payload.user.uid);
       await this.saveUser(this.email, response.payload.user.uid)
       this.utils.dismissLoading(this.loading);
       this.nav.navigateRoot(['tabs']);

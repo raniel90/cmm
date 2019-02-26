@@ -3,6 +3,7 @@ import { AuthService } from '../auth.service';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { UtilsService } from '../utils.service';
 import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class LoginPage {
     private nav: NavController,
     private utils: UtilsService,
     private loadingController: LoadingController,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private af: AngularFirestore) { }
 
   async login() {
     let msg: string = '';
@@ -29,8 +31,7 @@ export class LoginPage {
     const response: any = await this.authService.login(this.email, this.password);
     this.utils.dismissLoading(this.loading);
     if (response.success) {
-      this.storage.set('email', this.email);
-      this.storage.set('uid', response.payload.user.uid);
+      await this.setUser(response);
       this.nav.navigateRoot(['tabs']);
     } else {
       msg = this.authService.getPtBrMessage(response);
@@ -38,8 +39,23 @@ export class LoginPage {
     }
   }
 
-  logout() {
-    this.authService.logout();
+  async setUser(response) {
+    const user: any = await this.getUserByUid(response.payload.user.uid);
+
+    if (user && user.length) {
+      await this.storage.set('user_email', this.email);
+      await this.storage.set('user_uid', response.payload.user.uid);
+      await this.storage.set('user_root', user[0].root);
+    }
+  }
+
+  async getUserByUid(uid) {
+    const user: any = await this.utils.getValueFromObservable(
+      this.af.collection('users', ref =>
+        ref.where('uid', '==', uid)).valueChanges()
+    );
+
+    return user;
   }
 
   goToRegister() {

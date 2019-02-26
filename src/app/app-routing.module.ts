@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'select-music', loadChildren: './select-music/select-music.module#SelectMusicPageModule' },
   { path: 'worship-filter', loadChildren: './worship-filter/worship-filter.module#WorshipFilterPageModule' },
   { path: 'history-played', loadChildren: './history-played/history-played.module#HistoryPlayedPageModule' },
+  { path: 'general', loadChildren: './general/general.module#GeneralPageModule' },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -20,16 +20,15 @@ export class AppComponent {
     this.initializeApp();
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+  async initializeApp() {
+    const uid = await this.storage.get('user_uid');
 
-      this.storage.get('uid').then(res => {
-        if (!res) {
-          this.nav.navigateRoot(['login']);
-        }
-      });
-    });
+    await this.platform.ready()
+    this.statusBar.styleDefault();
+    this.splashScreen.hide();
+
+    if (!uid) {
+      this.nav.navigateRoot(['login']);
+    }
   }
 }
